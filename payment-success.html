@@ -185,7 +185,7 @@
     <script>
         (function () {
             const params = new URLSearchParams(window.location.search);
-            const orderId = params.get('order_id') || params.get('order') || '—';
+            const orderId = params.get('order_id') || params.get('order') || params.get('Shp_orderId') || params.get('InvId') || '—';
             const orderEl = document.getElementById('orderId');
             const countdownEl = document.getElementById('countdown');
             const openBotLink = document.getElementById('openBotLink');

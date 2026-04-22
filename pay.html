@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата заказа — Niuma</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+            background:
+                radial-gradient(circle at top, rgba(108, 92, 231, 0.25), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(116, 185, 255, 0.16), transparent 30%),
+                var(--bg);
+        }
+
+        .payment-page { width: 100%; max-width: 720px; }
+
+        .payment-card {
+            background: rgba(18, 18, 26, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            box-shadow: var(--shadow), var(--shadow-glow);
+            overflow: hidden;
+        }
+
+        .payment-top {
+            padding: 32px 32px 20px;
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.18), rgba(116, 185, 255, 0.12));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .payment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(108, 92, 231, 0.18);
+            color: #A29BFE;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .payment-title {
+            margin-top: 18px;
+            font-size: 38px;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+        }
+
+        .payment-subtitle {
+            margin-top: 14px;
+            color: var(--text-muted);
+            font-size: 17px;
+            max-width: 560px;
+        }
+
+        .payment-content { padding: 28px 32px 32px; }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .payment-info {
+            padding: 18px 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .payment-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dim);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .payment-value { font-size: 18px; font-weight: 700; }
+        .payment-amount { color: #A29BFE; }
+
+        .payment-note {
+            margin-bottom: 24px;
+            padding: 18px 20px;
+            border-radius: 20px;
+            background: rgba(108, 92, 231, 0.08);
+            border: 1px solid rgba(162, 155, 254, 0.18);
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .payment-note strong { color: var(--text); }
+
+        .payment-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .payment-error {
+            margin-top: 14px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            background: rgba(231, 76, 60, 0.14);
+            border: 1px solid rgba(231, 76, 60, 0.28);
+            color: #f5b7b1;
+            font-size: 14px;
+            display: none;
+        }
+
+        .payment-error.is-visible { display: block; }
+
+        @media (max-width: 640px) {
+            .payment-top, .payment-content { padding-left: 20px; padding-right: 20px; }
+            .payment-title { font-size: 30px; }
+            .payment-subtitle { font-size: 15px; }
+            .payment-grid { grid-template-columns: 1fr; }
+            .payment-actions { flex-direction: column; }
+            .payment-actions .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <main class="payment-page">
+        <section class="payment-card">
+            <div class="payment-top">
+                <div class="payment-badge">💳 Оплата заказа</div>
+                <h1 class="payment-title">Подтверждение покупки</h1>
+                <p class="payment-subtitle">Проверьте данные заказа и нажмите «Оплатить». Оплата проводится через <strong>Robokassa</strong> — официального платёжного агрегатора в РФ.</p>
+            </div>
+            <div class="payment-content">
+                <div class="payment-grid">
+                    <div class="payment-info">
+                        <span class="payment-label">Заказ</span>
+                        <div class="payment-value" id="orderId">—</div>
+                    </div>
+                    <div class="payment-info">
+                        <span class="payment-label">Тариф</span>
+                        <div class="payment-value" id="tariff">—</div>
+                    </div>
+                    <div class="payment-info">
+                        <span class="payment-label">Сумма</span>
+                        <div class="payment-value payment-amount" id="amount">—</div>
+                    </div>
+                </div>
+                <div class="payment-note">
+                    <strong>Как это работает:</strong> после оплаты ключ активации автоматически придёт в <a href="https://t.me/niuma_local_bot" target="_blank">@niuma_local_bot</a>. Страница успеха откроется автоматически.
+                </div>
+                <div class="payment-actions">
+                    <a class="btn btn-primary btn-lg" id="payBtn" href="#" rel="noopener">💳 Оплатить через Robokassa</a>
+                    <a class="btn btn-outline btn-lg" href="https://t.me/niuma_local_bot">Вернуться в бота</a>
+                </div>
+                <div class="payment-error" id="errorBox"></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const order = params.get('order') || params.get('order_id') || '—';
+            const tariff = params.get('tariff') || '—';
+            const amount = params.get('amount') || '';
+            const payUrl = params.get('url') || '';
+
+            document.getElementById('orderId').textContent = order;
+            document.getElementById('tariff').textContent = tariff;
+            document.getElementById('amount').textContent = amount ? (amount + ' ₽') : '—';
+
+            const payBtn = document.getElementById('payBtn');
+            const errorBox = document.getElementById('errorBox');
+
+            // Accept only trusted Robokassa host to avoid open-redirect abuse.
+            let isValid = false;
+            try {
+                if (payUrl) {
+                    const u = new URL(payUrl);
+                    if (u.protocol === 'https:' && (u.hostname === 'auth.robokassa.ru' || u.hostname === 'auth.robokassa.kz')) {
+                        isValid = true;
+                    }
+                }
+            } catch (e) { /* invalid URL */ }
+
+            if (isValid) {
+                payBtn.setAttribute('href', payUrl);
+            } else {
+                payBtn.setAttribute('aria-disabled', 'true');
+                payBtn.style.pointerEvents = 'none';
+                payBtn.style.opacity = '0.5';
+                errorBox.textContent = 'Ссылка на оплату отсутствует или повреждена. Вернитесь в бот и запросите оплату заново.';
+                errorBox.classList.add('is-visible');
+            }
+        })();
+    </script>
+</body>
+</html>
