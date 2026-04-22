@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата не завершена — Niuma</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+            background:
+                radial-gradient(circle at top, rgba(108, 92, 231, 0.18), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(255, 118, 117, 0.16), transparent 30%),
+                var(--bg);
+        }
+
+        .payment-page {
+            width: 100%;
+            max-width: 760px;
+        }
+
+        .payment-card {
+            background: rgba(18, 18, 26, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            box-shadow: var(--shadow), var(--shadow-glow);
+            overflow: hidden;
+        }
+
+        .payment-top {
+            padding: 32px 32px 20px;
+            background: linear-gradient(135deg, rgba(255, 118, 117, 0.14), rgba(108, 92, 231, 0.10));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .payment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(255, 118, 117, 0.12);
+            color: #fca5a5;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .payment-title {
+            margin-top: 18px;
+            font-size: 42px;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+        }
+
+        .payment-subtitle {
+            margin-top: 14px;
+            color: var(--text-muted);
+            font-size: 18px;
+            max-width: 560px;
+        }
+
+        .payment-content {
+            padding: 28px 32px 32px;
+        }
+
+        .payment-note {
+            margin-bottom: 26px;
+            padding: 18px 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 640px) {
+            .payment-top,
+            .payment-content {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .payment-title {
+                font-size: 32px;
+            }
+
+            .payment-subtitle {
+                font-size: 16px;
+            }
+
+            .payment-actions {
+                flex-direction: column;
+            }
+
+            .payment-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="payment-page">
+        <section class="payment-card">
+            <div class="payment-top">
+                <div class="payment-badge">⚠️ Оплата не завершена</div>
+                <h1 class="payment-title">Платёж не подтверждён</h1>
+                <p class="payment-subtitle">Если вы закрыли оплату или банк отклонил операцию, просто вернитесь в Telegram-бот и попробуйте ещё раз.</p>
+            </div>
+            <div class="payment-content">
+                <div class="payment-note">
+                    Niuma не списывает доступ без успешного подтверждения платежа. Откройте бота и снова начните оплату, если это нужно.
+                </div>
+                <div class="payment-actions">
+                    <a class="btn btn-primary btn-lg" href="https://t.me/niuma_local_bot">Открыть бота</a>
+                    <a class="btn btn-outline btn-lg" href="/">На главную niuma.ru</a>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

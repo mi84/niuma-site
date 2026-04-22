@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niuma — полная инструкция по установке и работе</title>
+    <link rel="stylesheet" href="style.css?v=20260318-1">
+    <link rel="icon" type="image/png" href="icon.png">
+    <style>
+        .guide-page {
+            padding: 132px 0 96px;
+        }
+
+        .guide-hero {
+            padding: 0 0 40px;
+        }
+
+        .guide-hero-inner {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .guide-panel,
+        .guide-sidebar,
+        .guide-section,
+        .guide-note,
+        .guide-warning,
+        .guide-success,
+        .guide-mini-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .guide-panel {
+            padding: 32px;
+        }
+
+        .guide-sidebar {
+            padding: 24px;
+            position: sticky;
+            top: 96px;
+            align-self: start;
+        }
+
+        .guide-panel h1 {
+            font-size: clamp(34px, 4vw, 56px);
+            line-height: 1.08;
+            margin-bottom: 18px;
+            letter-spacing: -0.02em;
+        }
+
+        .guide-panel p {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .guide-hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .guide-quick-list,
+        .guide-checklist,
+        .guide-step-list,
+        .guide-links,
+        .guide-faq-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .guide-quick-list {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            margin-top: 28px;
+        }
+
+        .guide-mini-card {
+            padding: 18px;
+        }
+
+        .guide-mini-card strong {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .guide-mini-card span {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .guide-sidebar h2,
+        .guide-section h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .guide-sidebar p {
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+        .guide-links a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(108, 92, 231, 0.18);
+            background: rgba(108, 92, 231, 0.08);
+            color: var(--text);
+        }
+
+        .guide-links a:hover {
+            border-color: rgba(162, 155, 254, 0.5);
+            transform: translateX(4px);
+        }
+
+        .guide-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 18px;
+            margin-top: 22px;
+        }
+
+        .guide-section {
+            padding: 28px;
+            scroll-margin-top: 96px;
+        }
+
+        .guide-section h3 {
+            margin-top: 22px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .guide-section p,
+        .guide-section li {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .guide-section ul,
+        .guide-section ol {
+            margin-left: 20px;
+        }
+
+        .guide-section li + li {
+            margin-top: 8px;
+        }
+
+        .guide-note,
+        .guide-warning,
+        .guide-success {
+            padding: 16px 18px;
+            margin-top: 16px;
+        }
+
+        .guide-media {
+            margin-top: 18px;
+        }
+
+        .guide-media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .guide-figure {
+            margin: 0;
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .guide-figure img {
+            width: 100%;
+            display: block;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .guide-figure figcaption {
+            margin-top: 10px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .guide-note {
+            background: rgba(108, 92, 231, 0.09);
+            border-color: rgba(108, 92, 231, 0.28);
+        }
+
+        .guide-warning {
+            background: rgba(245, 158, 11, 0.08);
+            border-color: rgba(245, 158, 11, 0.28);
+        }
+
+        .guide-success {
+            background: rgba(34, 197, 94, 0.08);
+            border-color: rgba(34, 197, 94, 0.28);
+        }
+
+        .guide-step-list {
+            margin-top: 12px;
+        }
+
+        .guide-step {
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .guide-step strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: var(--text);
+        }
+
+        .guide-step > strong {
+            display: block;
+        }
+
+        .guide-step span {
+            display: block;
+            color: var(--text-muted);
+            line-height: 1.65;
+        }
+
+        .guide-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            overflow: hidden;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+        }
+
+        .guide-table th,
+        .guide-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        .guide-table th {
+            color: var(--text);
+            background: rgba(108, 92, 231, 0.08);
+            font-size: 14px;
+        }
+
+        .guide-table td {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .guide-checklist {
+            margin-top: 14px;
+        }
+
+        .guide-check {
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .guide-check strong {
+            color: var(--text);
+        }
+
+        .guide-faq-item {
+            padding: 18px 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .guide-faq-item strong {
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .guide-faq-item > strong {
+            display: block;
+        }
+
+        .guide-faq-item span {
+            display: block;
+            line-height: 1.65;
+        }
+
+        code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.95em;
+            background: rgba(108, 92, 231, 0.12);
+            border: 1px solid rgba(108, 92, 231, 0.2);
+            border-radius: 8px;
+            padding: 2px 6px;
+        }
+
+        @media (max-width: 980px) {
+            .guide-hero-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .guide-sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .guide-page {
+                padding-top: 116px;
+            }
+
+            .guide-panel,
+            .guide-sidebar,
+            .guide-section {
+                padding: 22px;
+            }
+
+            .guide-hero-actions {
+                flex-direction: column;
+            }
+
+            .guide-hero-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="index.html" class="logo">
+                <img src="icon.png" alt="Niuma" class="logo-icon" />
+                <span class="logo-text">Niuma</span>
+            </a>
+            <nav class="nav">
+                <a href="#start">Старт</a>
+                <a href="#installation">Установка</a>
+                <a href="#activation">Активация</a>
+                <a href="#workflow">Работа</a>
+                <a href="#support">Поддержка</a>
+            </nav>
+            <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary btn-sm">Открыть бота</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Меню">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-nav" id="mobileNav">
+            <a href="#start">Старт</a>
+            <a href="#installation">Установка</a>
+            <a href="#activation">Активация</a>
+            <a href="#workflow">Работа</a>
+            <a href="#support">Поддержка</a>
+            <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary">Открыть бота</a>
+        </div>
+    </header>
+
+    <main class="guide-page">
+        <section class="guide-hero" id="start">
+            <div class="container guide-hero-inner">
+                <div class="guide-panel">
+                    <div class="badge">Полная инструкция по Niuma</div>
+                    <h1>Установка, покупка ключа и работа с AI в <span class="gradient-text">Windsurf и Cursor</span></h1>
+                    <p>Эта инструкция ведёт по полному пользовательскому пути: получить расширение, установить его, активировать ключ, понять где писать ответ AI, где отправлять дополнение или комментарий, как работать с вкладками панели и как обратиться в поддержку.</p>
+                    <p>Если вы используете <strong>Windsurf</strong>, здесь также описан режим аккаунтов. Если вы используете <strong>Cursor</strong>, установка и работа с диалогами такие же, но блок аккаунтов там скрыт.</p>
+                    <div class="guide-hero-actions">
+                        <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary btn-lg">Получить в боте</a>
+                        <a href="#installation" class="btn btn-outline btn-lg">Перейти к установке</a>
+                    </div>
+                    <div class="guide-quick-list">
+                        <div class="guide-mini-card">
+                            <strong>3 дня</strong>
+                            <span>Пробный доступ с полным функционалом</span>
+                        </div>
+                        <div class="guide-mini-card">
+                            <strong>50 ₽</strong>
+                            <span>Месячный доступ на 30 дней</span>
+                        </div>
+                        <div class="guide-mini-card">
+                            <strong>500 ₽</strong>
+                            <span>Постоянный ключ без срока</span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="guide-sidebar">
+                    <h2>Что внутри инструкции</h2>
+                    <p>Используйте оглавление, чтобы быстро перейти к нужному шагу. После утверждения структуры сюда можно будет добавить скриншоты по разделам.</p>
+                    <div class="guide-links">
+                        <a href="#before-start"><span>Что нужно перед стартом</span><span>01</span></a>
+                        <a href="#installation"><span>Установка в Windsurf и Cursor</span><span>02</span></a>
+                        <a href="#buy-key"><span>Пробный и платный ключ</span><span>03</span></a>
+                        <a href="#activation"><span>Активация и первая настройка</span><span>04</span></a>
+                        <a href="#workflow"><span>Ответы AI и комментарии</span><span>05</span></a>
+                        <a href="#accounts"><span>Аккаунты Windsurf</span><span>06</span></a>
+                        <a href="#keys"><span>Ключи, повторное скачивание, обновление, отвязка</span><span>07</span></a>
+                        <a href="#support"><span>Поддержка и тикеты</span><span>08</span></a>
+                        <a href="#faq"><span>Возможные проблемы</span><span>09</span></a>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <div class="container guide-layout">
+            <section class="guide-section" id="before-start">
+                <h2>1. Что нужно перед стартом</h2>
+                <p>Перед установкой подготовьте несколько вещей, чтобы весь сценарий прошёл без пауз.</p>
+                <div class="guide-checklist">
+                    <div class="guide-check"><strong>Редактор.</strong> У вас должен быть установлен <strong>Windsurf</strong> или <strong>Cursor</strong>.</div>
+                    <div class="guide-check"><strong>Telegram.</strong> Понадобится бот <a href="https://t.me/niuma_local_bot" target="_blank">@niuma_local_bot</a> — через него выдаётся пробный ключ, покупается доступ и скачивается VSIX.</div>
+                    <div class="guide-check"><strong>Понимание сценариев.</strong> В Niuma есть два разных действия: <strong>ответ в диалоге AI</strong> и <strong>дополнение / комментарий по ходу работы</strong>. Ниже они описаны отдельно, чтобы не путаться.</div>
+                </div>
+                <div class="guide-note">Если вы работаете в Cursor, учтите заранее: режим аккаунтов Windsurf там скрыт, поэтому соответствующий блок инструкции можно пропустить.</div>
+            </section>
+
+            <section class="guide-section" id="installation">
+                <h2>2. Как установить расширение</h2>
+                <h3>Шаг 1. Получите VSIX в боте</h3>
+                <ol>
+                    <li>Откройте <a href="https://t.me/niuma_local_bot" target="_blank">@niuma_local_bot</a>.</li>
+                    <li>Если у вас уже есть действующий ключ, зайдите в <strong>🔑 Мои ключи</strong>.</li>
+                    <li>Нажмите кнопку <strong>📦 Скачать расширение</strong>.</li>
+                    <li>Бот отправит файл расширения в формате <code>.vsix</code>.</li>
+                </ol>
+                <div class="guide-warning">Если действующего ключа ещё нет, сначала получите пробный или купите платный доступ. Без рабочего ключа кнопка скачивания не показывается.</div>
+
+                <h3>Шаг 2. Установка в Windsurf</h3>
+                <div class="guide-step-list">
+                    <div class="guide-step">
+                        <strong>1. Откройте раздел Extensions</strong>
+                        <span>Зайдите в боковое меню расширений в Windsurf.</span>
+                    </div>
+                    <div class="guide-step">
+                        <strong>2. Выберите Install from VSIX</strong>
+                        <span>Откройте меню раздела расширений и выберите установку из <code>.vsix</code>.</span>
+                    </div>
+                    <div class="guide-step">
+                        <strong>3. Укажите скачанный файл Niuma</strong>
+                        <span>Выберите VSIX, который прислал бот, и дождитесь установки.</span>
+                    </div>
+                    <div class="guide-step">
+                        <strong>4. Перезапустите IDE, если потребуется</strong>
+                        <span>После этого в боковой панели появится вкладка Niuma.</span>
+                    </div>
+                </div>
+                <figure class="guide-figure guide-media">
+                    <img src="assets/guide/install-from-vsix-windsurf.png" alt="Установка VSIX в Windsurf" loading="lazy" />
+                    <figcaption>Пример установки расширения из файла VSIX в Windsurf через раздел расширений.</figcaption>
+                </figure>
+
+                <h3>Шаг 3. Установка в Cursor</h3>
+                <p>Сценарий почти такой же:</p>
+                <ol>
+                    <li>Откройте раздел расширений.</li>
+                    <li>Выберите установку из <code>.vsix</code>.</li>
+                    <li>Укажите файл Niuma, скачанный из Telegram-бота.</li>
+                    <li>После установки откройте боковую панель Niuma.</li>
+                </ol>
+                <div class="guide-note">В Cursor доступны лицензия, диалоги, комментарии, project rules и история. Раздел аккаунтов Windsurf там скрыт.</div>
+                <div class="guide-media-grid">
+                    <figure class="guide-figure">
+                        <img src="assets/guide/niuma-installed-cursor.png" alt="Niuma после установки в Cursor" loading="lazy" />
+                        <figcaption>После установки Niuma появляется в списке расширений Cursor.</figcaption>
+                    </figure>
+                    <figure class="guide-figure">
+                        <img src="assets/guide/pin-niuma-sidebar.png" alt="Закрепление панели Niuma в боковой панели" loading="lazy" />
+                        <figcaption>Если нужно, закрепите вкладку Niuma в боковой панели, чтобы она всегда была под рукой.</figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <section class="guide-section" id="buy-key">
+                <h2>3. Как получить или купить ключ</h2>
+                <h3>Пробный ключ</h3>
+                <ol>
+                    <li>В боте нажмите <strong>🛒 Купить</strong>.</li>
+                    <li>Выберите <strong>🆓 Пробный — 3 дня</strong>.</li>
+                    <li>Бот сразу выдаст ключ и следующим сообщением отправит расширение.</li>
+                </ol>
+                <div class="guide-warning">Пробный период выдаётся один раз на пользователя. Если он уже был использован, бот предложит платные тарифы.</div>
+
+                <h3>Платный ключ</h3>
+                <ol>
+                    <li>Нажмите <strong>🛒 Купить</strong>.</li>
+                    <li>Выберите <strong>💳 Месячный</strong> или <strong>💎 Постоянный</strong>.</li>
+                    <li>Бот покажет заказ и кнопку <strong>💳 Открыть оплату</strong>.</li>
+                    <li>Оплата откроется внутри Telegram Web App.</li>
+                    <li>После оплаты ключ обычно приходит автоматически.</li>
+                    <li>Если нужно, используйте <strong>🔄 Проверить статус</strong>.</li>
+                </ol>
+                <div class="guide-success">После подтверждения оплаты бот отправляет ключ и даёт возможность повторно скачать расширение через раздел <strong>🔑 Мои ключи</strong>.</div>
+            </section>
+
+            <section class="guide-section" id="activation">
+                <h2>4. Как активировать ключ и подготовить панель</h2>
+                <ol>
+                    <li>Откройте боковую панель <strong>Niuma</strong> в IDE.</li>
+                    <li>Перейдите на вкладку <strong>Настройки</strong>.</li>
+                    <li>В поле активации вставьте ключ вида <code>NIUMA-XXXX-XXXX-XXXX-XXXX</code>.</li>
+                    <li>Нажмите <strong>Активировать</strong>.</li>
+                </ol>
+                <p>После успешной активации расширение подтвердит лицензию, покажет тариф и срок действия, а затем откроет доступ к рабочим разделам.</p>
+                <div class="guide-media-grid">
+                    <figure class="guide-figure">
+                        <img src="assets/guide/license-activation-form.png" alt="Форма активации лицензии Niuma" loading="lazy" />
+                        <figcaption>На вкладке настроек вставьте ключ в поле активации и нажмите кнопку <strong>Активировать</strong>.</figcaption>
+                    </figure>
+                    <figure class="guide-figure">
+                        <img src="assets/guide/license-activated.png" alt="Активированная лицензия Niuma" loading="lazy" />
+                        <figcaption>После активации расширение показывает тариф, срок действия и подтверждение, что лицензия активирована на этом устройстве.</figcaption>
+                    </figure>
+                </div>
+
+                <table class="guide-table">
+                    <thead>
+                        <tr>
+                            <th>Вкладка</th>
+                            <th>Для чего нужна</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Нюма</strong></td>
+                            <td>Статус MCP, очередь ожидания, кнопка <strong>Дополнение / Комментарий</strong>, статистика, история, project rules.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Аккаунты</strong></td>
+                            <td>Добавление аккаунтов Windsurf, переключение, просмотр кредитов. Доступно только в режиме Windsurf.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Настройки</strong></td>
+                            <td>Активация лицензии, ссылка в бот, включение правил проекта, режим IDE, язык, проверка обновлений.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="guide-note">Если вы только установили расширение, сначала имеет смысл проверить на вкладке <strong>Настройки</strong> режим IDE: <strong>Auto</strong>, <strong>Windsurf</strong> или <strong>Cursor</strong>.</div>
+                <h3>Проверьте, что MCP-сервер Niuma включён</h3>
+                <p>Если диалог Niuma не появляется, убедитесь, что сервер <strong>niuma-local</strong> включён в настройках MCP вашего редактора.</p>
+                <div class="guide-media-grid">
+                    <figure class="guide-figure">
+                        <img src="assets/guide/mcp-server-tools-settings.png" alt="Проверка MCP-сервера Niuma в настройках Tools & MCP" loading="lazy" />
+                        <figcaption>В разделе <strong>Tools &amp; MCP</strong> проверьте, что сервер <strong>niuma-local</strong> присутствует в списке и включён.</figcaption>
+                    </figure>
+                    <figure class="guide-figure">
+                        <img src="assets/guide/mcp-server-cascade-toggle.png" alt="Проверка включения MCP-сервера Niuma в меню Cascade" loading="lazy" />
+                        <figcaption>В интерфейсе Windsurf IDE также можно быстро проверить, что MCP для <strong>niuma-local</strong> активен.</figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <section class="guide-section" id="workflow">
+                <h2>5. Где писать ответ AI, а где дополнение / комментарий</h2>
+                <p>Это два разных сценария. Важно их не смешивать.</p>
+                <div class="guide-note">Работа начинается в системном чате IDE: сначала вы пишете задачу туда. После этого Niuma подключается через MCP и ведёт рабочий процесс. Когда AI доходит до шага, где нужен ваш ответ, диалог Niuma появляется автоматически. Если вам нужно вмешаться вручную раньше, используйте <strong>Дополнение / Комментарий</strong>.</div>
+
+                <h3>Сценарий A. Ответ в диалоге AI</h3>
+                <ol>
+                    <li>AI показывает результат работы через диалог Niuma.</li>
+                    <li>В открывшемся окне вы даёте <strong>ответ на текущий шаг</strong>: подтверждение, правку, уточнение или завершение.</li>
+                    <li>Если нужно, туда же можно приложить файлы и изображения.</li>
+                </ol>
+                <div class="guide-success">Используйте этот сценарий, когда AI уже остановился и ждёт вашей реакции на конкретный результат.</div>
+                <figure class="guide-figure guide-media">
+                    <img src="assets/guide/answer-ai-dialog.png" alt="Диалог ответа AI в Niuma" loading="lazy" />
+                    <figcaption>Пример системного чата IDE и диалога Niuma, в котором вы даёте ответ на текущий шаг AI.</figcaption>
+                </figure>
+
+                <h3>Сценарий B. Дополнение / Комментарий по ходу работы</h3>
+                <ol>
+                    <li>Откройте вкладку <strong>Нюма</strong>.</li>
+                    <li>Нажмите кнопку <strong>📝 Дополнение / Комментарий</strong>.</li>
+                    <li>Или используйте горячую клавишу <code>Ctrl+Shift+N</code>.</li>
+                    <li>Введите новую задачу, уточнение или корректировку.</li>
+                    <li>AI получит это как дополнение при следующем рабочем цикле.</li>
+                </ol>
+                <div class="guide-note">Этот режим нужен, когда AI ещё работает или когда вы хотите добавить новую мысль, не дожидаясь следующего финального окна.</div>
+                <figure class="guide-figure guide-media">
+                    <img src="assets/guide/comment-dialog-niuma-tab.png" alt="Дополнение или комментарий во вкладке Niuma" loading="lazy" />
+                    <figcaption>Во вкладке <strong>Нюма</strong> откройте форму <strong>Дополнение / Комментарий</strong>, введите уточнение и отправьте его AI.</figcaption>
+                </figure>
+
+                <h3>Что ещё находится во вкладке «Нюма»</h3>
+                <ul>
+                    <li><strong>MCP-сервер.</strong> Показывает состояние подключения и порт.</li>
+                    <li><strong>Очередь ожидания.</strong> Здесь видно, есть ли ожидающие пользовательские дополнения.</li>
+                    <li><strong>История и экспорт.</strong> Можно открыть историю, экспортировать или импортировать её.</li>
+                    <li><strong>Project Rules.</strong> Локальные правила проекта, которые Niuma добавляет в работу AI.</li>
+                </ul>
+
+                <h3>Итоги, история итогов и просмотр истории</h3>
+                <ol>
+                    <li>Когда рабочий цикл завершается, Niuma показывает окно <strong>Итог сессии</strong>.</li>
+                    <li>В этом окне кратко перечисляется, что было сделано, какие файлы затронуты и что осталось проверить или доделать.</li>
+                    <li>Итог сохраняется в историю, поэтому к нему можно вернуться позже.</li>
+                    <li>Во вкладке <strong>Нюма</strong> кнопка <strong>История итогов</strong> открывает список сохранённых итогов.</li>
+                    <li>Кнопка <strong>Просмотр истории</strong> нужна для просмотра общей истории диалогов и контекста.</li>
+                </ol>
+                <figure class="guide-figure guide-media">
+                    <img src="assets/guide/session-summary-history.png" alt="Окно Итог сессии в Niuma" loading="lazy" />
+                    <figcaption>После завершения работы Niuma показывает итог сессии и сохраняет его в историю для последующего просмотра.</figcaption>
+                </figure>
+
+                <h3>Как работать с Project Rules</h3>
+                <ol>
+                    <li>Во вкладке <strong>Нюма</strong> найдите блок <strong>Правила проекта</strong>.</li>
+                    <li>Запишите туда ваши обязательные правила работы.</li>
+                    <li>Нажмите <strong>Сохранить правила</strong>.</li>
+                </ol>
+                <p>Эти правила хранятся локально в <code>.niuma-local/user_rules.md</code> внутри проекта и помогают не повторять одни и те же требования в каждом сообщении.</p>
+            </section>
+
+            <section class="guide-section" id="accounts">
+                <h2>6. Как добавить аккаунты Windsurf</h2>
+                <p>Этот раздел нужен только пользователям <strong>Windsurf</strong>. В Cursor вкладка аккаунтов скрыта.</p>
+
+                <ol>
+                    <li>Перейдите во вкладку <strong>Настройки</strong>.</li>
+                    <li>Убедитесь, что выбран режим IDE <strong>Windsurf</strong> или <strong>Auto</strong>, если он корректно определился.</li>
+                    <li>Включите <strong>Режим аккаунтов</strong>, если он ещё отключён.</li>
+                    <li>Откройте вкладку <strong>Аккаунты</strong>.</li>
+                    <li>Вставьте список аккаунтов в поле добавления, каждый на новой строке.</li>
+                </ol>
+                <div class="guide-media-grid">
+                    <figure class="guide-figure">
+                        <img src="assets/guide/accounts-tab-list.png" alt="Вкладка аккаунтов Windsurf в Niuma" loading="lazy" />
+                        <figcaption>На вкладке <strong>Аккаунты</strong> можно добавить список аккаунтов, увидеть текущий активный аккаунт и быстро переключаться между ними.</figcaption>
+                    </figure>
+                    <figure class="guide-figure">
+                        <img src="assets/guide/account-status-topbar.png" alt="Статус активного аккаунта Windsurf в верхней панели" loading="lazy" />
+                        <figcaption>В верхней панели можно увидеть активный аккаунт, текущий режим и остаток доступных лимитов.</figcaption>
+                    </figure>
+                </div>
+
+                <div class="guide-note">Формат ввода: <code>email@example.com----пароль</code>. Если у некоторых аккаунтов используется пароль по умолчанию, его тоже нужно указать в соответствующей строке.</div>
+
+                <h3>Что вы увидите после добавления</h3>
+                <ul>
+                    <li>список аккаунтов</li>
+                    <li>текущий активный аккаунт</li>
+                    <li>остаток кредитов</li>
+                    <li>кнопки входа, переподключения и удаления</li>
+                </ul>
+
+                <div class="guide-warning">Купить аккаунты можно в боте. Для покупки нажмите кнопку <strong>Купить</strong>.</div>
+            </section>
+
+            <section class="guide-section" id="keys">
+                <h2>7. Где смотреть ключи, как скачать расширение ещё раз, обновить его и как отвязать устройство</h2>
+                <h3>Раздел «Мои ключи» в боте</h3>
+                <ol>
+                    <li>Откройте <strong>🔑 Мои ключи</strong>.</li>
+                    <li>Бот покажет все ваши ключи, срок действия и привязанное устройство.</li>
+                    <li>Если у вас есть действующий ключ, появится кнопка <strong>📦 Скачать расширение</strong>.</li>
+                    <li>В этом же разделе отображается актуальная версия расширения.</li>
+                </ol>
+
+                <h3>Когда использовать повторное скачивание</h3>
+                <ul>
+                    <li>если вы переустановили IDE</li>
+                    <li>если потеряли файл <code>.vsix</code></li>
+                    <li>если хотите заново установить актуальную версию</li>
+                </ul>
+
+                <h3>Как обновить расширение</h3>
+                <ol>
+                    <li>Откройте <strong>🔑 Мои ключи</strong>.</li>
+                    <li>Посмотрите, появилась ли там обновлённая версия расширения.</li>
+                    <li>Нажмите <strong>📦 Скачать расширение</strong> и получите новый <code>.vsix</code>.</li>
+                    <li>Установите его в IDE повторно через <strong>Install from VSIX</strong>.</li>
+                </ol>
+
+                <h3>Как отвязать устройство</h3>
+                <ol>
+                    <li>Откройте <strong>🔑 Мои ключи</strong>.</li>
+                    <li>Нажмите <strong>🔓 Отвязать устройство</strong>.</li>
+                    <li>Выберите нужный ключ.</li>
+                </ol>
+                <p>После отвязки ключ можно активировать на другом устройстве заново.</p>
+
+                <h3>Как удалить нерабочий ключ</h3>
+                <ol>
+                    <li>Откройте <strong>🔑 Мои ключи</strong>.</li>
+                    <li>Нажмите <strong>🗑 Удалить нерабочий ключ</strong>.</li>
+                    <li>Выберите ключ, который уже неактивен и не нужен в списке.</li>
+                </ol>
+            </section>
+
+            <section class="guide-section" id="support">
+                <h2>8. Как написать в поддержку и как отвечать в тикете</h2>
+                <h3>Первое сообщение в поддержку</h3>
+                <ol>
+                    <li>В главном меню бота нажмите <strong>💬 Поддержка</strong>.</li>
+                    <li>Отправьте сообщение одним сообщением.</li>
+                    <li>При необходимости приложите фото или документ.</li>
+                </ol>
+                <p>После отправки бот подтвердит, что сообщение ушло в поддержку. Когда администратор ответит, ответ придёт в этот же бот.</p>
+
+                <h3>Как отвечать дальше в уже открытом тикете</h3>
+                <ol>
+                    <li>Когда по вашему тикету уже есть активный диалог, используйте кнопку <strong>💬 Ответить</strong>.</li>
+                    <li>Если вопрос решён, нажмите <strong>✅ Закрыть тикет</strong>.</li>
+                </ol>
+
+                <table class="guide-table">
+                    <thead>
+                        <tr>
+                            <th>Кнопка</th>
+                            <th>Когда использовать</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>💬 Поддержка</strong></td>
+                            <td>Чтобы начать новый вопрос или обращение.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>💬 Ответить</strong></td>
+                            <td>Чтобы продолжить уже открытый тикет и ответить по существующему диалогу.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>✅ Закрыть тикет</strong></td>
+                            <td>Когда вопрос решён и дальнейшие ответы не нужны.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="guide-section" id="faq">
+                <h2>9. Возможные проблемы</h2>
+                <div class="guide-faq-list">
+                    <div class="guide-faq-item">
+                        <strong>Я установил расширение, но вижу только настройки.</strong>
+                        <span>Скорее всего, ключ ещё не активирован. Откройте вкладку <strong>Настройки</strong>, вставьте ключ и нажмите <strong>Активировать</strong>.</span>
+                    </div>
+                    <div class="guide-faq-item">
+                        <strong>Не понимаю, куда писать новое уточнение.</strong>
+                        <span>Если AI уже ждёт реакцию на окно результата — отвечайте в диалоге. Если хотите добавить новую мысль по ходу работы — используйте <strong>Дополнение / Комментарий</strong> или <code>Ctrl+Shift+N</code>.</span>
+                    </div>
+                    <div class="guide-faq-item">
+                        <strong>Не вижу вкладку аккаунтов.</strong>
+                        <span>Проверьте, что у вас режим <strong>Windsurf</strong>. В Cursor раздел аккаунтов специально скрыт.</span>
+                    </div>
+                    <div class="guide-faq-item">
+                        <strong>Нужно скачать расширение заново.</strong>
+                        <span>Перейдите в боте в <strong>🔑 Мои ключи</strong> и нажмите <strong>📦 Скачать расширение</strong>.</span>
+                    </div>
+                    <div class="guide-faq-item">
+                        <strong>Диалог от Niuma не появляется.</strong>
+                        <span>Проверьте, что у вас запущен системный чат IDE, что стартовал MCP-сервер и что выбранная модель не игнорирует MCP. Некоторые модели действительно могут игнорировать MCP — в таком случае используйте другую модель.</span>
+                    </div>
+                    <div class="guide-faq-item">
+                        <strong>Закрыл системный чат и в новом чате AI завершил предыдущую задачу.</strong>
+                        <span>Не закрывайте системный чат до завершения диалога. Если открыть новый чат раньше, AI может завершить предыдущий процесс и показать итоги уже там. Это не ошибка, а ограничение MCP.</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <img src="icon.png" alt="Niuma" class="logo-icon" />
+                    <span class="logo-text">Niuma</span>
+                </a>
+                <p>Подробная инструкция по установке, активации и работе с Niuma в Windsurf и Cursor.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>Навигация</h4>
+                    <a href="#installation">Установка</a>
+                    <a href="#workflow">Работа с AI</a>
+                    <a href="#support">Поддержка</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Сайт</h4>
+                    <a href="index.html">Главная</a>
+                    <a href="oferta.html">Договор оферты</a>
+                    <a href="privacy.html">Политика конфиденциальности</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Контакты</h4>
+                    <a href="https://t.me/niuma_local_bot" target="_blank">Telegram: @niuma_local_bot</a>
+                    <a href="mailto:support@nc43.ru">Email: support@nc43.ru</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?v=20260313-2"></script>
+</body>
+</html>

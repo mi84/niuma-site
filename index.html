@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niuma — контроль AI через диалоги в Windsurf и Cursor</title>
+    <link rel="stylesheet" href="style.css?v=20260318-1">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="selfwork.ru" content="qe9ZM8WfrKyve0zYmn5LMgqsJxHoujONGKEiKEaPxHEG5aC3p0" />
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="#" class="logo">
+                <img src="icon.png" alt="Niuma" class="logo-icon" />
+                <span class="logo-text">Niuma</span>
+            </a>
+            <nav class="nav">
+                <a href="#features">Возможности</a>
+                <a href="#how-it-works">Как работает</a>
+                <a href="guide.html">Инструкция</a>
+                <a href="#pricing">Цены</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+            <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary btn-sm">Открыть бота</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Меню">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-nav" id="mobileNav">
+            <a href="#features">Возможности</a>
+            <a href="#how-it-works">Как работает</a>
+            <a href="guide.html">Инструкция</a>
+            <a href="#pricing">Цены</a>
+            <a href="#faq">FAQ</a>
+            <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary">Открыть бота</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="hero-glow hero-glow-1"></div>
+            <div class="hero-glow hero-glow-2"></div>
+        </div>
+        <div class="container hero-inner">
+            <div class="badge">Niuma для Windsurf и Cursor</div>
+            <h1>Посмотрите, как <span class="gradient-text">Niuma работает</span> в Windsurf и Cursor</h1>
+            <p class="hero-desc">Niuma — расширение для Windsurf и Cursor, которое добавляет управляемые диалоги с AI, асинхронные вопросы, комментарии по ходу работы, файлы, project rules, историю и удобный запуск через боковую панель. AI работает быстрее, а вы в любой момент можете направить его без потери контекста.</p>
+            <div class="hero-actions">
+                <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary btn-lg">Получить в боте</a>
+                <a href="guide.html" class="btn btn-outline btn-lg">Полная инструкция</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-value">3 дня</span>
+                    <span class="stat-label">Пробный период</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">50 ₽</span>
+                    <span class="stat-label">30 дней</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">500 ₽</span>
+                    <span class="stat-label">Бессрочно</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Возможности</span>
+                <h2>Всё для <span class="gradient-text">контроля AI в работе</span></h2>
+                <p>Niuma превращает AI из чёрного ящика в управляемого напарника с понятным циклом согласования</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    </div>
+                    <h3>Интерактивные диалоги</h3>
+                    <p>AI показывает результат работы и ждёт вашего решения. Вы можете продолжить, скорректировать задачу или завершить сессию без потери контекста.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                    </div>
+                    <h3>Файлы и изображения</h3>
+                    <p>Прикладывайте файлы, скриншоты и уточнения прямо в диалоге или отдельным комментарием, когда AI уже работает над задачей.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </div>
+                    <h3>Project Rules</h3>
+                    <p>Правила проекта сохраняются локально и автоматически учитываются AI при работе, чтобы не повторять одни и те же требования в каждом диалоге.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <h3>Лицензия и обновления</h3>
+                    <p>Лицензия активируется прямо в панели расширения, а Niuma сама показывает текущую версию и сообщает, когда в боте доступно обновление.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    </div>
+                    <h3>История и локальные данные</h3>
+                    <p>История диалогов, локальные настройки, экспорт, импорт и очистка project data доступны из интерфейса расширения без лишней ручной настройки.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    </div>
+                    <h3>Windsurf и Cursor</h3>
+                    <p>Niuma автоматически определяет редактор и настраивается под него. Боковая панель, настройки, лицензия, история и рабочий статус AI — всё в одном месте.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Как работает</span>
+                <h2>Три шага к <span class="gradient-text">полному контролю</span></h2>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3>Получите Niuma в Telegram-боте</h3>
+                        <p>Откройте <a href="https://t.me/niuma_local_bot" target="_blank">@niuma_local_bot</a>, получите VSIX-файл и выберите тариф: 3 дня бесплатно, 30 дней за 50 ₽ или бессрочный доступ за 500 ₽.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3>Установите и активируйте</h3>
+                        <p>Установите расширение в Windsurf или Cursor из VSIX, откройте боковую панель Niuma и активируйте ключ. Оттуда же доступны версия, обновления и параметры работы.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3>Управляйте AI в процессе работы</h3>
+                        <p>Получайте диалоги с результатом, отправляйте комментарии по ходу работы, прикрепляйте файлы и сохраняйте project rules, чтобы AI действовал по вашим правилам.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo / Screenshot -->
+    <section class="demo-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Демо</span>
+                <h2>Посмотрите, как <span class="gradient-text">Niuma работает</span></h2>
+                <p>Короткое видео показывает живой сценарий работы расширения: запуск диалога, асинхронные вопросы, комментарии по ходу задачи и контроль результата.</p>
+            </div>
+            <div class="demo-window">
+                <div class="demo-titlebar">
+                    <div class="demo-dots">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <span class="demo-title">Niuma — Видео-демо расширения</span>
+                </div>
+                <div class="demo-video-frame">
+                    <video class="demo-video" controls preload="none" playsinline>
+                        <source src="Video.mp4" type="video/mp4">
+                        Ваш браузер не поддерживает воспроизведение видео.
+                    </video>
+                </div>
+                <div class="demo-caption">
+                    В видео показано, как Niuma помогает управлять AI через диалоги, комментарии и сохранённый контекст прямо внутри IDE.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Тарифы</span>
+                <h2>Выберите свой <span class="gradient-text">доступ</span></h2>
+                <p>Все тарифы получают одинаковый функционал. Отличается только срок доступа.</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Пробный</h3>
+                        <div class="price">
+                            <span class="price-amount">Бесплатно</span>
+                        </div>
+                        <p class="pricing-desc">3 дня для знакомства</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><span class="check">✓</span> Полный функционал расширения</li>
+                        <li><span class="check">✓</span> 3 дня бесплатно</li>
+                        <li><span class="check">✓</span> Активация ключа в панели</li>
+                        <li><span class="check">✓</span> Привязка к ПК</li>
+                        <li><span class="check">✓</span> Выдача через Telegram-бот</li>
+                    </ul>
+                    <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-outline btn-block">Попробовать</a>
+                </div>
+                <div class="pricing-card pricing-card-popular">
+                    <div class="popular-badge">Популярный</div>
+                    <div class="pricing-header">
+                        <h3>Месячный</h3>
+                        <div class="price">
+                            <span class="price-amount">50 ₽</span>
+                            <span class="price-period">/ 30 дней</span>
+                        </div>
+                        <p class="pricing-desc">Для ежедневной работы</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><span class="check">✓</span> Полный функционал расширения</li>
+                        <li><span class="check">✓</span> 30 дней доступа</li>
+                        <li><span class="check">✓</span> Проверка версии и обновлений</li>
+                        <li><span class="check">✓</span> Привязка к ПК</li>
+                        <li><span class="check">✓</span> Покупка и продление через бота</li>
+                    </ul>
+                    <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary btn-block">Купить</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Постоянный</h3>
+                        <div class="price">
+                            <span class="price-amount">500 ₽</span>
+                            <span class="price-period">навсегда</span>
+                        </div>
+                        <p class="pricing-desc">Одноразовый платёж</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><span class="check">✓</span> Полный функционал расширения</li>
+                        <li><span class="check">✓</span> Бессрочный доступ</li>
+                        <li><span class="check">✓</span> Лицензия на одно устройство</li>
+                        <li><span class="check">✓</span> Проверка обновлений в панели</li>
+                        <li><span class="check">✓</span> Покупка через Telegram-бот</li>
+                    </ul>
+                    <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-outline btn-block">Купить</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">FAQ</span>
+                <h2>Частые вопросы</h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>Что именно делает Niuma?</span>
+                        <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Niuma добавляет в Windsurf и Cursor управляемый слой взаимодействия с AI: диалоги с результатом работы, асинхронные вопросы, комментарии по ходу выполнения, project rules, локальную историю, активацию лицензии и уведомления об обновлениях.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>Нужно ли вручную настраивать MCP?</span>
+                        <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Нет, основной сценарий уже завязан на само расширение. Пользователь получает VSIX в боте, устанавливает его в Windsurf или Cursor, открывает боковую панель Niuma и активирует ключ.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>Мои данные отправляются куда-то?</span>
+                        <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Код, файлы, история диалогов и project rules хранятся локально на вашем компьютере. На серверы Niuma не отправляется содержимое IDE, но для лицензии, покупки и проверки обновлений используются серверные запросы и Telegram-бот.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>Как установить Niuma?</span>
+                        <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Откройте <a href="https://t.me/niuma_local_bot" target="_blank">@niuma_local_bot</a>, получите VSIX-файл, установите его в Windsurf или Cursor и активируйте ключ в панели расширения. После этого можно сразу работать с диалогами и правилами проекта.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>Как приходят обновления?</span>
+                        <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Расширение показывает текущую версию и умеет проверять, вышло ли обновление. Если новая версия доступна, Niuma направит вас в <a href="https://t.me/niuma_local_bot" target="_blank">Telegram-бот</a> для скачивания.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>Есть ли пробный период?</span>
+                        <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Да. Пробный доступ — 3 дня бесплатно с полным функционалом. Месячный доступ стоит 50 ₽ за 30 дней, бессрочный — 500 ₽. Все варианты оформляются через <a href="https://t.me/niuma_local_bot" target="_blank">@niuma_local_bot</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-inner">
+                <div class="cta-glow"></div>
+                <h2>Готовы работать с AI под вашим контролем?</h2>
+                <p>Откройте бота, получите Niuma и начните управлять задачами, правками и обратной связью в Windsurf или Cursor из одной панели.</p>
+                <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary btn-lg">Открыть @niuma_local_bot</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <img src="icon.png" alt="Niuma" class="logo-icon" />
+                    <span class="logo-text">Niuma</span>
+                </a>
+                <p>Расширение для контроля AI через диалоги в Windsurf и Cursor</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>Продукт</h4>
+                    <a href="#features">Возможности</a>
+                    <a href="guide.html">Инструкция</a>
+                    <a href="#pricing">Цены</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Документы</h4>
+                    <a href="/oferta.html">Договор оферты</a>
+                    <a href="/privacy.html">Политика конфиденциальности</a>
+                    <a href="/refund.html">Условия возврата</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Контакты</h4>
+                    <a href="https://t.me/niuma_local_bot" target="_blank">Telegram: @niuma_local_bot</a>
+                    <a href="mailto:support@nc43.ru">Email: support@nc43.ru</a>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Niuma. Гребенев Михаил Юрьевич, ИНН: 434540669410. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="paymentReturn" data-enabled="false" hidden aria-hidden="true"></div>
+
+    <script src="script.js?v=20260415-1" defer></script>
+</body>
+</html>
