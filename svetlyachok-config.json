@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "minClientVersion": "0.1.23",
+  "endpoints": [
+    {
+      "name": "primary-vps",
+      "comment": "Основной VPS 107.173.7.103 через api.niuma.ru. Может быть заблокирован у мобильных операторов РФ.",
+      "apiBaseUrl": "https://api.niuma.ru/svetlyachok",
+      "websocketUrl": "wss://api.niuma.ru/svetlyachok/ws",
+      "priority": 1
+    },
+    {
+      "name": "fly-fallback",
+      "comment": "Резервный backend на Fly.io. Используется если основной заблокирован. Замените хост на ваш домен после fly deploy.",
+      "apiBaseUrl": "https://svetlyachok-relay.fly.dev",
+      "websocketUrl": "wss://svetlyachok-relay.fly.dev/ws",
+      "priority": 2,
+      "enabled": false
+    }
+  ],
+  "configRefreshIntervalMinutes": 60,
+  "healthCheckTimeoutMs": 6000,
+  "healthEndpointPath": "/health",
+  "updatedAt": "2026-04-28T20:00:00Z",
+  "_notes": "Этот файл лежит на https://niuma.ru/svetlyachok-config.json (GitHub Pages, диапазон 185.199.108-111.0/24 не блокируется мобильными операторами РФ). Мобильное приложение качает его при каждом старте и кэширует. Меняя содержимое можно перенаправлять клиентов на другой backend без пересборки APK. Чтобы включить fly-fallback: задеплойте сервер на Fly.io (см. server/fly.toml), замените имя домена и enabled=true."
+}
