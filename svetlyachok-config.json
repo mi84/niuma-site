@@ -10,11 +10,19 @@
       "priority": 1
     },
     {
+      "name": "deno-fallback",
+      "comment": "Резервный backend на Deno Deploy. Используется если основной заблокирован у мобильного оператора. После деплоя проекта замените имя на свой и установите enabled=true.",
+      "apiBaseUrl": "https://svetlyachok-relay.deno.dev",
+      "websocketUrl": "wss://svetlyachok-relay.deno.dev/ws",
+      "priority": 2,
+      "enabled": false
+    },
+    {
       "name": "fly-fallback",
-      "comment": "Резервный backend на Fly.io. Используется если основной заблокирован. Замените хост на ваш домен после fly deploy.",
+      "comment": "Альтернативный резервный backend на Fly.io (требует биллинг). Не используется по умолчанию.",
       "apiBaseUrl": "https://svetlyachok-relay.fly.dev",
       "websocketUrl": "wss://svetlyachok-relay.fly.dev/ws",
-      "priority": 2,
+      "priority": 3,
       "enabled": false
     }
   ],
@@ -22,5 +30,5 @@
   "healthCheckTimeoutMs": 6000,
   "healthEndpointPath": "/health",
   "updatedAt": "2026-04-28T20:00:00Z",
-  "_notes": "Этот файл лежит на https://niuma.ru/svetlyachok-config.json (GitHub Pages, диапазон 185.199.108-111.0/24 не блокируется мобильными операторами РФ). Мобильное приложение качает его при каждом старте и кэширует. Меняя содержимое можно перенаправлять клиентов на другой backend без пересборки APK. Чтобы включить fly-fallback: задеплойте сервер на Fly.io (см. server/fly.toml), замените имя домена и enabled=true."
+  "_notes": "Файл лежит на https://niuma.ru/svetlyachok-config.json (GitHub Pages, диапазон 185.199.108-111.0/24 не блокируется мобильными операторами РФ). Мобильное приложение качает его при каждом старте и кэширует. Меняя содержимое можно перенаправлять клиентов на другой backend без пересборки APK. Чтобы включить deno-fallback: задеплойте svetlyachok/deno-server/main.ts на https://dash.deno.com и установите enabled=true. Подробности — svetlyachok/deno-server/README.md."
 }
