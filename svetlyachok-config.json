@@ -11,11 +11,11 @@
     },
     {
       "name": "deno-fallback",
-      "comment": "Резервный backend на Deno Deploy. Используется если основной заблокирован у мобильного оператора. После деплоя проекта замените имя на свой и установите enabled=true.",
-      "apiBaseUrl": "https://svetlyachok-relay.deno.dev",
-      "websocketUrl": "wss://svetlyachok-relay.deno.dev/ws",
+      "comment": "Резервный backend на Deno Deploy EA, организация mi84. Используется если основной VPS заблокирован у мобильного оператора. KV-база svetlyachok-kv привязана к app.",
+      "apiBaseUrl": "https://svetlyachok-relay.mi84.deno.net",
+      "websocketUrl": "wss://svetlyachok-relay.mi84.deno.net/ws",
       "priority": 2,
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "fly-fallback",
