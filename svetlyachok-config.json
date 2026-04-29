@@ -18,25 +18,17 @@
       "enabled": true
     },
     {
-      "name": "deno-fallback",
-      "comment": "Прежний резервный backend на Deno Deploy EA. Отключён после перехода на VPS РФ — не federated с другими peer'ами; оставлен в конфиге как aварийный запасной вариант (включить вручную, если оба VPS лежат).",
-      "apiBaseUrl": "https://svetlyachok-relay.mi84.deno.net",
-      "websocketUrl": "wss://svetlyachok-relay.mi84.deno.net/ws",
-      "priority": 3,
-      "enabled": false
-    },
-    {
       "name": "fly-fallback",
       "comment": "Альтернативный резервный backend на Fly.io (требует биллинг). Не используется по умолчанию.",
       "apiBaseUrl": "https://svetlyachok-relay.fly.dev",
       "websocketUrl": "wss://svetlyachok-relay.fly.dev/ws",
-      "priority": 4,
+      "priority": 3,
       "enabled": false
     }
   ],
   "configRefreshIntervalMinutes": 60,
   "healthCheckTimeoutMs": 6000,
   "healthEndpointPath": "/health",
-  "updatedAt": "2026-04-29T15:10:00Z",
-  "_notes": "Файл лежит на https://niuma.ru/svetlyachok-config.json (GitHub Pages, диапазон 185.199.108-111.0/24 не блокируется мобильными операторами РФ). Мобильное приложение качает его при каждом старте и кэширует. Меняя содержимое можно перенаправлять клиентов на другой backend без пересборки APK. priority=1 (US VPS) — для всех у кого нет блокировки; priority=2 (RU VPS) — для тех кому DPI режет US/Cloudflare. Эти два сервера federation-связаны: сигналы между ними реплицируются по /v1/federated/signal. Deno-fallback отключён (enabled=false) после стабилизации russian-fallback; оставлен в файле как ручной аварийный вариант на случай падения обоих VPS — в federation он не участвует."
+  "updatedAt": "2026-04-29T18:00:00Z",
+  "_notes": "Файл лежит на https://niuma.ru/svetlyachok-config.json (GitHub Pages, диапазон 185.199.108-111.0/24 не блокируется мобильными операторами РФ). Мобильное приложение качает его при каждом старте и кэширует. Меняя содержимое можно перенаправлять клиентов на другой backend без пересборки APK. priority=1 (US VPS) — для всех у кого нет блокировки; priority=2 (RU VPS) — для тех кому DPI режет US/Cloudflare. Оба сервера federation-связаны: сигналы между ними реплицируются по /v1/federated/signal. Fly-fallback оставлен как опциональный вариант на случай если потребуется ещё одна площадка (требует биллинг, по умолчанию выключен)."
 }
