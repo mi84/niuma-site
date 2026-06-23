@@ -186,11 +186,13 @@
         (function () {
             const params = new URLSearchParams(window.location.search);
             const orderId = params.get('order_id') || params.get('order') || params.get('Shp_orderId') || params.get('InvId') || '—';
+            const isWindOrder = /^(WW-|WP-|WB-|DV-)/i.test(String(orderId).trim());
+            const botName = isWindOrder ? 'windsurf_pro_bot' : 'niuma_local_bot';
             const orderEl = document.getElementById('orderId');
             const countdownEl = document.getElementById('countdown');
             const openBotLink = document.getElementById('openBotLink');
-            const botUrl = 'https://t.me/niuma_local_bot';
-            const botDeepLink = 'tg://resolve?domain=niuma_local_bot';
+            const botUrl = 'https://t.me/' + botName;
+            const botDeepLink = 'tg://resolve?domain=' + botName;
             let seconds = 4;
             let redirected = false;
 
@@ -206,6 +208,12 @@
             }
 
             orderEl.textContent = orderId;
+            openBotLink.href = botUrl;
+            document.querySelectorAll('.payment-note a').forEach((a) => { a.href = botUrl; a.textContent = '@' + botName; });
+            if (isWindOrder) {
+                const subtitle = document.querySelector('.payment-subtitle');
+                if (subtitle) { subtitle.textContent = 'Аккаунт автоматически отправляется вам в Telegram-бот. После короткой паузы мы откроем бота автоматически.'; }
+            }
 
             openBotLink.addEventListener('click', (event) => {
                 event.preventDefault();
