@@ -121,11 +121,22 @@
                     Niuma не списывает доступ без успешного подтверждения платежа. Откройте бота и снова начните оплату, если это нужно.
                 </div>
                 <div class="payment-actions">
-                    <a class="btn btn-primary btn-lg" href="https://t.me/niuma_local_bot">Открыть бота</a>
+                    <a class="btn btn-primary btn-lg" href="https://t.me/niuma_local_bot" id="openBotLink">Открыть бота</a>
                     <a class="btn btn-outline btn-lg" href="/">На главную niuma.ru</a>
                 </div>
             </div>
         </section>
     </main>
+    <script>
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const orderId = params.get('order_id') || params.get('order') || params.get('Shp_orderId') || params.get('InvId') || '';
+            const isWindOrder = /^(WW-|WP-|WB-|DV-)/i.test(String(orderId).trim());
+            if (isWindOrder) {
+                const link = document.getElementById('openBotLink');
+                if (link) { link.href = 'https://t.me/windsurf_pro_bot'; }
+            }
+        })();
+    </script>
 </body>
 </html>
