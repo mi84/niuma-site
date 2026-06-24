@@ -202,8 +202,8 @@
                     <li><strong>Аккаунт Devin</strong> — приходит в боте после покупки в одном из трёх форматов:
                         <ul class="dv-list">
                             <li><strong>Вариант 1.</strong> <code>Логин----Пароль</code> — прямой вход, разовый код не нужен.</li>
-                            <li><strong>Вариант 2.</strong> <code>Логин----Пароль----Токен</code> — вход + одноразовый 2FA-код (генерируется из токена).</li>
-                            <li><strong>Вариант 3.</strong> <code>email----пароль----client_id----refresh_token</code> — вход через GitHub + разовый код входа из письма.</li>
+                            <li><strong>Вариант 2.</strong> <code>Логин----Пароль----Токен</code> — вход через <strong>GitHub</strong> + одноразовый 2FA-код (генерируется из токена).</li>
+                            <li><strong>Вариант 3.</strong> <code>email----пароль----client_id----refresh_token</code> — вход по <strong>логину Devin</strong> + разовый код входа (Login Code) из письма.</li>
                         </ul>
                     </li>
                 </ul>
@@ -220,10 +220,10 @@
                     <li>Разовый код <strong>не требуется</strong> — вы сразу попадёте в аккаунт.</li>
                 </ul>
 
-                <h3 style="margin:18px 0 6px;">Вариант 2 — Логин + Пароль + 2FA-токен</h3>
+                <h3 style="margin:18px 0 6px;">Вариант 2 — Логин + Пароль + 2FA-токен (GitHub)</h3>
                 <ul class="dv-list">
-                    <li>Войдите по <strong>логину и паролю</strong>.</li>
-                    <li>Когда запросят <strong>код двухфакторной аутентификации</strong> — сгенерируйте его из выданного токена.</li>
+                    <li>На странице входа выберите вход через <strong>GitHub</strong> и войдите по выданным <strong>логину и паролю</strong>.</li>
+                    <li>Когда GitHub запросит <strong>код двухфакторной аутентификации</strong> — сгенерируйте его из выданного токена.</li>
                 </ul>
                 <div class="dv-callout tip">
                     <div class="dv-2fa-box">
@@ -233,9 +233,9 @@
                     <p style="margin:12px 0 0;">Скопируйте код и введите его при запросе 2FA. Код считается прямо в браузере — токен никуда не отправляется.</p>
                 </div>
 
-                <h3 style="margin:18px 0 6px;">Вариант 3 — вход через GitHub (разовый код из письма)</h3>
+                <h3 style="margin:18px 0 6px;">Вариант 3 — вход по логину Devin (разовый код из письма)</h3>
                 <ul class="dv-list">
-                    <li>Нажмите <strong>«Continue with GitHub»</strong> и используйте <strong>выданный</strong> аккаунт (не свой личный).</li>
+                    <li>Введите выданный <strong>логин (email)</strong> и пароль в форме входа Devin.</li>
                     <li>Когда Devin запросит <strong>разовый код входа</strong> (Login Code), получите его из письма на странице «Почта».</li>
                 </ul>
                 <div class="dv-callout tip">
