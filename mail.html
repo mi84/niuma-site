@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niuma — получение писем и кодов подтверждения</title>
+    <link rel="stylesheet" href="style.css?v=20260318-1">
+    <link rel="icon" type="image/png" href="icon.png">
+    <style>
+        .ml-page { padding: 132px 0 96px; min-height: 70vh; }
+        .ml-inner { max-width: 760px; margin: 0 auto; }
+        .ml-head { text-align: center; margin-bottom: 32px; }
+        .ml-head h1 {
+            font-size: clamp(30px, 4vw, 44px);
+            line-height: 1.1; margin: 16px 0 12px; letter-spacing: -0.02em;
+        }
+        .ml-head p { color: var(--text-muted); font-size: 16px; }
+
+        .ml-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 32px;
+        }
+        .ml-field { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: var(--text); }
+        .ml-textarea {
+            width: 100%; box-sizing: border-box; min-height: 120px; resize: vertical;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 14px 16px; color: var(--text); font-size: 14px; font-family: ui-monospace, Menlo, Consolas, monospace;
+            line-height: 1.5; transition: border-color var(--transition);
+        }
+        .ml-textarea:focus { outline: none; border-color: var(--primary); }
+        .ml-textarea::placeholder { color: var(--text-dim); }
+
+        .ml-controls { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 14px; }
+        .ml-options { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-muted); }
+        .ml-options input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--primary); }
+        .ml-spacer { flex: 1 1 auto; }
+
+        .ml-error {
+            margin-top: 16px; padding: 12px 16px; border-radius: 10px;
+            border: 1px solid rgba(255, 99, 99, 0.4); background: rgba(255, 99, 99, 0.08);
+            color: #ff9b9b; font-size: 14px; display: none;
+        }
+        .ml-status { margin-top: 16px; font-size: 14px; color: var(--text-muted); display: none; }
+
+        .ml-results { margin-top: 28px; display: flex; flex-direction: column; gap: 18px; }
+        .acc {
+            border: 1px solid var(--border); border-radius: 14px; background: var(--surface);
+            padding: 20px; 
+        }
+        .acc-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .acc-email { font-weight: 700; font-size: 15px; color: var(--text); word-break: break-all; }
+        .acc-badge {
+            font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: 600;
+        }
+        .acc-badge.ok { background: rgba(46, 213, 115, 0.12); color: #58e08a; border: 1px solid rgba(46, 213, 115, 0.3); }
+        .acc-badge.err { background: rgba(255, 99, 99, 0.1); color: #ff9b9b; border: 1px solid rgba(255, 99, 99, 0.3); }
+
+        .acc-code-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 4px 0 16px; }
+        .acc-code-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); }
+        .acc-code {
+            font-size: 34px; font-weight: 800; letter-spacing: 0.1em; line-height: 1;
+            background: var(--gradient); -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; cursor: pointer; user-select: all;
+        }
+        .acc-copy-hint { font-size: 13px; color: var(--text-dim); }
+        .acc-err-text { color: #ff9b9b; font-size: 14px; }
+
+        .msg { border-top: 1px solid var(--border); padding: 12px 0; }
+        .msg:first-of-type { border-top: none; }
+        .msg-top { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; font-size: 13px; }
+        .msg-from { color: var(--text); font-weight: 600; }
+        .msg-date { color: var(--text-dim); white-space: nowrap; }
+        .msg-subj { color: var(--text-muted); font-size: 14px; margin: 4px 0; }
+        .msg-subj b { color: var(--primary-light); }
+        .msg-preview { color: var(--text-dim); font-size: 13px; line-height: 1.5; }
+        .msg-code {
+            display: inline-block; margin-top: 6px; font-family: ui-monospace, monospace; font-weight: 700;
+            background: rgba(108, 92, 231, 0.12); border: 1px solid rgba(108, 92, 231, 0.35);
+            color: #e7e3ff; border-radius: 8px; padding: 2px 10px; cursor: pointer; font-size: 15px;
+        }
+
+        .ml-note {
+            margin-top: 28px; padding: 16px 20px; border-radius: 12px; border: 1px solid var(--border);
+            background: var(--surface); color: var(--text-muted); font-size: 14px; line-height: 1.6;
+        }
+        .ml-note code {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+            padding: 2px 6px; font-size: 13px; color: var(--primary-light); word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="index.html" class="logo">
+                <img src="icon.png" alt="Niuma" class="logo-icon" />
+                <span class="logo-text">Niuma</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html">Главная</a>
+                <a href="guide.html">Инструкция</a>
+                <a href="devin.html">Devin</a>
+                <a href="2fa.html">2FA-код</a>
+                <a href="mail.html">Почта</a>
+            </nav>
+            <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary btn-sm">Открыть бота</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Меню">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-nav" id="mobileNav">
+            <a href="index.html">Главная</a>
+            <a href="guide.html">Инструкция</a>
+            <a href="devin.html">Devin</a>
+            <a href="2fa.html">2FA-код</a>
+            <a href="mail.html">Почта</a>
+            <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary">Открыть бота</a>
+        </div>
+    </header>
+
+    <main class="ml-page">
+        <div class="container ml-inner">
+            <div class="ml-head">
+                <div class="badge">Почта и коды подтверждения</div>
+                <h1>Получение <span class="gradient-text">писем</span></h1>
+                <p>Вставьте строку аккаунта (или список до 10 штук, по одной в строке) — получите код входа в Devin и письма-подтверждения.</p>
+            </div>
+
+            <div class="ml-card">
+                <label class="ml-field" for="mlAccounts">Аккаунты (по одному в строке)</label>
+                <textarea class="ml-textarea" id="mlAccounts" spellcheck="false" autocapitalize="off"
+                    placeholder="email----пароль----client_id----refresh_token&#10;email2----пароль2----client_id2----refresh_token2"></textarea>
+
+                <div class="ml-controls">
+                    <label class="ml-options">
+                        <input type="checkbox" id="mlOnlyDevin" checked> Только письма Devin (код входа)
+                    </label>
+                    <label class="ml-options">
+                        <input type="checkbox" id="mlRemember"> Запомнить в этом браузере
+                    </label>
+                    <label class="ml-options">
+                        <input type="checkbox" id="mlAuto"> Автообновление (15 с)
+                    </label>
+                    <span class="ml-spacer"></span>
+                    <button class="btn btn-primary" id="mlSubmit" type="button">Получить письма</button>
+                </div>
+
+                <div class="ml-error" id="mlError"></div>
+                <div class="ml-status" id="mlStatus"></div>
+                <div class="ml-results" id="mlResults"></div>
+            </div>
+
+            <div class="ml-note">
+                Строка аккаунта имеет вид <code>email----пароль----client_id----refresh_token</code>.
+                По <code>refresh_token</code> получается токен Microsoft, и почта читается по протоколу
+                <code>IMAP</code> (XOAUTH2) на нашем сервере <code>api.niuma.ru</code> — сторонние сервисы не используются,
+                письма нигде не сохраняются. Подробнее о входе в Devin — на странице
+                <a href="devin.html" style="color: var(--primary-light);">инструкции по Devin</a>.
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <img src="icon.png" alt="Niuma" class="logo-icon" />
+                    <span class="logo-text">Niuma</span>
+                </a>
+                <p>Разовые коды и письма-подтверждения для входа в выданные аккаунты.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>Навигация</h4>
+                    <a href="index.html">Главная</a>
+                    <a href="guide.html">Инструкция</a>
+                    <a href="devin.html">Настройка Devin</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Сайт</h4>
+                    <a href="oferta.html">Договор оферты</a>
+                    <a href="privacy.html">Политика конфиденциальности</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Контакты</h4>
+                    <a href="https://t.me/niuma_local_bot" target="_blank">Telegram: @niuma_local_bot</a>
+                    <a href="mailto:support@nc43.ru">Email: support@nc43.ru</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var API_URL = 'https://api.niuma.ru/mailapi/api/inbox';
+            var STORAGE_KEY = 'niuma.mail.accounts';
+
+            var accountsEl = document.getElementById('mlAccounts');
+            var onlyDevinEl = document.getElementById('mlOnlyDevin');
+            var rememberEl = document.getElementById('mlRemember');
+            var autoEl = document.getElementById('mlAuto');
+            var submitBtn = document.getElementById('mlSubmit');
+            var errorEl = document.getElementById('mlError');
+            var statusEl = document.getElementById('mlStatus');
+            var resultsEl = document.getElementById('mlResults');
+            var autoHandle = null;
+
+            var menuBtn = document.getElementById('mobileMenuBtn');
+            var mobileNav = document.getElementById('mobileNav');
+            if (menuBtn) menuBtn.addEventListener('click', function () { mobileNav.classList.toggle('active'); });
+
+            function showError(msg) { errorEl.textContent = msg; errorEl.style.display = 'block'; }
+            function clearError() { errorEl.style.display = 'none'; errorEl.textContent = ''; }
+            function setStatus(msg) {
+                if (msg) { statusEl.textContent = msg; statusEl.style.display = 'block'; }
+                else { statusEl.style.display = 'none'; }
+            }
+
+            function esc(s) {
+                return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+                });
+            }
+
+            function copy(text, hintEl, okText) {
+                var done = function () {
+                    if (hintEl) {
+                        var prev = hintEl.textContent;
+                        hintEl.textContent = okText || 'Скопировано ✓';
+                        setTimeout(function () { hintEl.textContent = prev; }, 1600);
+                    }
+                };
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(done, done);
+                } else { done(); }
+            }
+
+            function renderAccount(acc) {
+                var card = document.createElement('div');
+                card.className = 'acc';
+                var head = '<div class="acc-head">' +
+                    '<span class="acc-email">' + esc(acc.email || acc.raw || 'аккаунт') + '</span>' +
+                    (acc.ok ? '<span class="acc-badge ok">OK</span>' : '<span class="acc-badge err">Ошибка</span>') +
+                    '</div>';
+                var inner = head;
+
+                if (!acc.ok) {
+                    inner += '<div class="acc-err-text">' + esc(acc.error || 'Не удалось получить почту') + '</div>';
+                    card.innerHTML = inner;
+                    return card;
+                }
+
+                if (acc.code) {
+                    inner += '<div class="acc-code-row">' +
+                        '<span class="acc-code-label">Код</span>' +
+                        '<span class="acc-code" data-code="' + esc(acc.code) + '" title="Нажмите, чтобы скопировать">' + esc(acc.code) + '</span>' +
+                        '<span class="acc-copy-hint">нажмите, чтобы скопировать</span>' +
+                        '</div>';
+                }
+
+                if (!acc.messages || !acc.messages.length) {
+                    inner += '<div class="msg-preview">Писем не найдено.</div>';
+                } else {
+                    acc.messages.forEach(function (m) {
+                        var subj = esc(m.subject || '(без темы)');
+                        inner += '<div class="msg">' +
+                            '<div class="msg-top"><span class="msg-from">' + esc(m.from || '') + '</span>' +
+                            '<span class="msg-date">' + esc(m.date || '') + '</span></div>' +
+                            '<div class="msg-subj">' + subj + '</div>' +
+                            (m.codes && m.codes.length
+                                ? m.codes.map(function (c) { return '<span class="msg-code" data-code="' + esc(c) + '">' + esc(c) + '</span>'; }).join(' ')
+                                : '') +
+                            '<div class="msg-preview">' + esc(m.preview || '') + '</div>' +
+                            '</div>';
+                    });
+                }
+                card.innerHTML = inner;
+
+                card.querySelectorAll('[data-code]').forEach(function (el) {
+                    el.addEventListener('click', function () {
+                        copy(el.getAttribute('data-code'), el.parentNode.querySelector('.acc-copy-hint'), 'Код скопирован ✓');
+                    });
+                });
+                return card;
+            }
+
+            function fetchInbox() {
+                var raw = accountsEl.value.trim();
+                if (!raw) { showError('Вставьте хотя бы одну строку аккаунта.'); return; }
+                clearError();
+
+                if (rememberEl.checked) {
+                    try { localStorage.setItem(STORAGE_KEY, accountsEl.value); } catch (e) {}
+                } else {
+                    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+                }
+
+                submitBtn.disabled = true;
+                setStatus('Получаю почту…');
+
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        raw: raw,
+                        sender: onlyDevinEl.checked ? 'cognition.ai' : ''
+                    })
+                }).then(function (r) {
+                    return r.json().then(function (data) { return { ok: r.ok, data: data }; });
+                }).then(function (res) {
+                    submitBtn.disabled = false;
+                    setStatus('');
+                    if (!res.ok) {
+                        showError((res.data && res.data.detail) ? res.data.detail : 'Ошибка сервера.');
+                        return;
+                    }
+                    resultsEl.innerHTML = '';
+                    (res.data.accounts || []).forEach(function (acc) {
+                        resultsEl.appendChild(renderAccount(acc));
+                    });
+                    if (!(res.data.accounts || []).length) setStatus('Аккаунты не распознаны.');
+                }).catch(function (e) {
+                    submitBtn.disabled = false;
+                    setStatus('');
+                    showError('Не удалось связаться с сервером: ' + e.message);
+                });
+            }
+
+            function applyAuto() {
+                if (autoHandle) { clearInterval(autoHandle); autoHandle = null; }
+                if (autoEl.checked) { autoHandle = setInterval(fetchInbox, 15000); }
+            }
+
+            submitBtn.addEventListener('click', fetchInbox);
+            autoEl.addEventListener('change', applyAuto);
+
+            try {
+                var saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) { accountsEl.value = saved; rememberEl.checked = true; }
+            } catch (e) {}
+        })();
+    </script>
+</body>
+</html>
