@@ -70,7 +70,7 @@ a {
 }
 
 .btn-primary {
-    background: var(--gradient);
+    background: linear-gradient(135deg, #5A4BD1, #6C5CE7);
     color: #fff;
     box-shadow: 0 4px 20px rgba(108, 92, 231, 0.35);
 }
