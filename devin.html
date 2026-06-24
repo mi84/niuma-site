@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niuma — инструкция по настройке Devin (Opus 4.5 / GPT-5.5)</title>
+    <link rel="stylesheet" href="style.css?v=20260318-1">
+    <link rel="icon" type="image/png" href="icon.png">
+    <style>
+        .dv-page { padding: 132px 0 96px; }
+
+        .dv-inner { max-width: 860px; margin: 0 auto; }
+
+        .dv-head { text-align: center; margin-bottom: 40px; }
+
+        .dv-head h1 {
+            font-size: clamp(32px, 4.5vw, 52px);
+            line-height: 1.08;
+            margin: 16px 0 14px;
+            letter-spacing: -0.02em;
+        }
+
+        .dv-head p { color: var(--text-muted); font-size: 17px; }
+
+        .dv-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .dv-section h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dv-step-num {
+            flex: 0 0 auto;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--gradient);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .dv-section > p { color: var(--text-muted); margin: 14px 0; }
+
+        .dv-list { list-style: none; margin: 12px 0; padding: 0; }
+
+        .dv-list li {
+            position: relative;
+            padding: 8px 0 8px 28px;
+            color: var(--text);
+        }
+
+        .dv-list li::before {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 16px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .dv-list li strong { color: var(--text); }
+
+        .dv-section a { color: var(--primary-light); }
+
+        code, .dv-code {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 2px 7px;
+            font-size: 14px;
+            color: var(--primary-light);
+            word-break: break-all;
+        }
+
+        .dv-callout {
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 15px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-muted);
+        }
+
+        .dv-callout.warning {
+            border-color: rgba(255, 180, 80, 0.4);
+            background: rgba(255, 180, 80, 0.08);
+            color: #ffd9a3;
+        }
+
+        .dv-callout.tip {
+            border-color: rgba(108, 92, 231, 0.45);
+            background: rgba(108, 92, 231, 0.1);
+            color: var(--primary-light);
+        }
+
+        .dv-callout strong { color: inherit; }
+
+        .dv-2fa-box {
+            margin-top: 16px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .dv-toc {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 32px;
+            justify-content: center;
+        }
+
+        .dv-toc a {
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: var(--text-muted);
+            transition: all var(--transition);
+        }
+
+        .dv-toc a:hover { border-color: var(--primary); color: var(--text); }
+
+        .dv-quote {
+            border-left: 3px solid var(--primary);
+            padding: 4px 16px;
+            color: var(--text);
+            font-style: italic;
+            margin: 14px 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="index.html" class="logo">
+                <img src="icon.png" alt="Niuma" class="logo-icon" />
+                <span class="logo-text">Niuma</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html">Главная</a>
+                <a href="guide.html">Инструкция</a>
+                <a href="devin.html">Devin</a>
+                <a href="2fa.html">2FA-код</a>
+            </nav>
+            <a href="https://app.devin.ai/signup" target="_blank" class="btn btn-primary btn-sm">Открыть Devin</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Меню">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-nav" id="mobileNav">
+            <a href="index.html">Главная</a>
+            <a href="guide.html">Инструкция</a>
+            <a href="devin.html">Devin</a>
+            <a href="2fa.html">2FA-код</a>
+            <a href="https://app.devin.ai/signup" target="_blank" class="btn btn-primary">Открыть Devin</a>
+        </div>
+    </header>
+
+    <main class="dv-page">
+        <div class="container dv-inner">
+            <div class="dv-head">
+                <div class="badge">Devin · Opus 4.5 / GPT-5.5</div>
+                <h1>Инструкция по настройке <span class="gradient-text">Devin</span></h1>
+                <p>Подключите репозиторий к Devin, настройте баланс и начните работу с ИИ-ассистентом. Руководство проведёт по всем шагам — от авторизации до запуска первой сессии.</p>
+            </div>
+
+            <nav class="dv-toc">
+                <a href="#needed">Необходимые данные</a>
+                <a href="#auth">Авторизация</a>
+                <a href="#balance">Баланс</a>
+                <a href="#github">GitHub</a>
+                <a href="#run">Запуск сессии</a>
+                <a href="#tool">Контроль баланса</a>
+            </nav>
+
+            <section class="dv-section" id="needed">
+                <h2><span class="dv-step-num">★</span> Необходимые данные</h2>
+                <ul class="dv-list">
+                    <li><strong>GitHub-аккаунт</strong> — ваш личный, с доступом к нужному репозиторию.</li>
+                    <li><strong>Аккаунт Devin</strong> — один из вариантов:
+                        <ul class="dv-list">
+                            <li>логин и пароль (для прямой авторизации), либо</li>
+                            <li>данные входа через GitHub (выданный аккаунт) и <strong>секретный токен</strong> для получения 2FA-кода.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="dv-section" id="auth">
+                <h2><span class="dv-step-num">1</span> Авторизация в Devin</h2>
+                <p>Перейдите на страницу регистрации <a href="https://app.devin.ai/signup" target="_blank">app.devin.ai/signup</a> и выберите способ входа.</p>
+                <ul class="dv-list">
+                    <li><strong>Прямая авторизация</strong> — введите логин и пароль. Поле для входа находится в нижней части страницы.</li>
+                    <li><strong>Авторизация через GitHub</strong> — используйте <strong>выданный</strong> аккаунт, а не свой личный.</li>
+                </ul>
+                <p>Для входа через GitHub потребуется одноразовый 2FA-код. Получить его можно прямо на этом сайте:</p>
+                <div class="dv-callout tip">
+                    <div class="dv-2fa-box">
+                        <span>Откройте генератор кодов, вставьте выданный секретный токен — код обновляется автоматически.</span>
+                        <a href="2fa.html" class="btn btn-primary btn-sm">Открыть генератор 2FA</a>
+                    </div>
+                    <p style="margin:12px 0 0;">Вставьте полученный при регистрации секрет, скопируйте код и введите его при запросе 2FA. Код считается прямо в браузере — секрет никуда не отправляется.</p>
+                </div>
+            </section>
+
+            <section class="dv-section" id="balance">
+                <h2><span class="dv-step-num">2</span> Настройка организации и баланса</h2>
+                <ul class="dv-list">
+                    <li>После входа вы попадёте в список сессий (<strong>Devin Sessions</strong>).</li>
+                    <li>В левом верхнем углу нажмите на <strong>имя пользователя</strong> → <strong>«Settings»</strong>.</li>
+                    <li>Откройте вкладку <strong>«Usage &amp; Limits»</strong> и проверьте остаток баланса.</li>
+                </ul>
+                <div class="dv-callout">Убедитесь, что средств достаточно для запуска сессии — рекомендуется иметь <strong>от 5&nbsp;$</strong>.</div>
+            </section>
+
+            <section class="dv-section" id="github">
+                <h2><span class="dv-step-num">3</span> Подключение вашего GitHub-аккаунта</h2>
+                <ul class="dv-list">
+                    <li>В настройках откройте вкладку <strong>«Connections»</strong> → <strong>«GitHub»</strong> → <strong>«Add connection»</strong>.</li>
+                    <li><strong>Важно:</strong> выберите <strong>«Add to this organization»</strong>, <strong>не создавайте</strong> новую организацию.</li>
+                    <li>На странице GitHub войдите под <strong>своим личным аккаунтом</strong> (у которого есть доступ к репозиторию).</li>
+                    <li>При первом подключении нажмите зелёную кнопку <strong>«Install»</strong> для установки приложения Devin.</li>
+                </ul>
+                <div class="dv-callout warning">
+                    <strong>Если приложение уже установлено, но возникла ошибка:</strong>
+                    <ul class="dv-list" style="margin-top:8px;">
+                        <li>Нажмите <strong>«Connect»</strong> → откроется GitHub.</li>
+                        <li>Нажмите <strong>«Uninstall»</strong> (удалите приложение).</li>
+                        <li>Закройте страницу, снова нажмите <strong>«Connect»</strong> и затем <strong>«Install»</strong> — права доступа переустановятся.</li>
+                    </ul>
+                </div>
+                <p>После успешного подключения отобразится статус <strong>«GitHub Connected»</strong>. Нажмите <strong>«Get started»</strong>.</p>
+            </section>
+
+            <section class="dv-section" id="run">
+                <h2><span class="dv-step-num">4</span> Запуск сессии и работа с агентом</h2>
+                <ul class="dv-list">
+                    <li>Вы вернётесь на страницу списка сессий (<strong>Devin Sessions</strong>).</li>
+                    <li><strong>Выберите модель</strong> — рекомендуется Opus 4.5 или GPT-5.5 — и <strong>укажите репозиторий</strong> для работы.</li>
+                </ul>
+                <div class="dv-callout tip">
+                    <strong>Совет по экономии баланса:</strong>
+                    <ul class="dv-list" style="margin-top:8px;">
+                        <li>Держите баланс <strong>не менее 5&nbsp;$</strong>, чтобы агент выполнил задачу без остановки.</li>
+                        <li>Останавливайте сессию вручную, когда агент завершил ключевые действия, чтобы не тратить средства впустую.</li>
+                    </ul>
+                </div>
+                <p><strong>Пример запроса к агенту</strong> (формулировка для максимальной пользы):</p>
+                <p class="dv-quote">«Создай подробную инструкцию для ИИ-разработчиков (AI instructions), обнови техническую спецификацию проекта и загрузи все исходные файлы в корень репозитория на GitHub».</p>
+            </section>
+
+            <section class="dv-section" id="tool">
+                <h2><span class="dv-step-num">+</span> Контроль баланса (опционально)</h2>
+                <p>Для удобного мониторинга баланса в фоновом режиме можно использовать утилиту от MikhailG517:</p>
+                <ul class="dv-list">
+                    <li>Скачать: <a href="https://mikhailg517.github.io/devin/" target="_blank">mikhailg517.github.io/devin</a></li>
+                    <li>Тестировалось на Windows 11, отображает остаток в трее и может автоматически остановить чат при достижении заданного порога.</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <img src="icon.png" alt="Niuma" class="logo-icon" />
+                    <span class="logo-text">Niuma</span>
+                </a>
+                <p>Подключение репозитория к Devin и работа с ИИ-ассистентом.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>Навигация</h4>
+                    <a href="#auth">Авторизация</a>
+                    <a href="#github">GitHub</a>
+                    <a href="#run">Запуск сессии</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Сайт</h4>
+                    <a href="index.html">Главная</a>
+                    <a href="guide.html">Инструкция Niuma</a>
+                    <a href="2fa.html">Генератор 2FA</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Контакты</h4>
+                    <a href="https://t.me/niuma_local_bot" target="_blank">Telegram: @niuma_local_bot</a>
+                    <a href="mailto:support@nc43.ru">Email: support@nc43.ru</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?v=20260313-2"></script>
+</body>
+</html>
