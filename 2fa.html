@@ -246,8 +246,8 @@
             </div>
 
             <div class="tfa-note">
-                Код берётся через сервис <code>https://kloping.top/api/2fa0?secret=ВАШ_ТОКЕН</code>.
-                Токен хранится только в вашем браузере и отправляется напрямую этому сервису.
+                Код вычисляется прямо в вашем браузере по алгоритму <code>TOTP (RFC&nbsp;6238)</code> — секрет никуда не отправляется и внешние сервисы не используются.
+                Токен (секрет в формате Base32) хранится только локально.
                 Подробнее о входе в Devin — на странице <a href="devin.html" style="color: var(--primary-light);">инструкции по Devin</a>.
             </div>
         </div>
@@ -285,8 +285,8 @@
 
     <script>
         (function () {
-            var API_BASE = 'https://kloping.top/api/2fa0';
-            var PERIOD = 30; // секунд, стандартный TOTP-период
+            var PERIOD = 30;   // секунд, стандартный TOTP-период
+            var DIGITS = 6;    // длина кода
             var STORAGE_KEY = 'niuma.2fa.token';
 
             var tokenInput = document.getElementById('tfaToken');
@@ -325,25 +325,72 @@
                 errorBox.textContent = '';
             }
 
-            function fetchCode() {
+            // --- TOTP (RFC 6238) целиком на клиенте ---
+
+            // Декодирование Base32 (RFC 4648) в Uint8Array
+            function base32Decode(input) {
+                var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+                var clean = String(input).toUpperCase().replace(/=+$/, '').replace(/\s+/g, '');
+                if (!clean) throw new Error('пустой токен');
+                var bits = 0, value = 0, out = [];
+                for (var i = 0; i < clean.length; i++) {
+                    var idx = alphabet.indexOf(clean[i]);
+                    if (idx === -1) throw new Error('токен должен быть в формате Base32 (A–Z, 2–7)');
+                    value = (value << 5) | idx;
+                    bits += 5;
+                    if (bits >= 8) {
+                        bits -= 8;
+                        out.push((value >>> bits) & 0xff);
+                    }
+                }
+                return new Uint8Array(out);
+            }
+
+            function counterBytes(counter) {
+                var buf = new Uint8Array(8);
+                for (var i = 7; i >= 0; i--) {
+                    buf[i] = counter & 0xff;
+                    counter = Math.floor(counter / 256);
+                }
+                return buf;
+            }
+
+            function generateCode() {
                 if (!currentToken) return;
+                var keyBytes;
+                try {
+                    keyBytes = base32Decode(currentToken);
+                } catch (e) {
+                    showError('Некорректный токен: ' + e.message + '.');
+                    resultBox.classList.remove('active');
+                    return;
+                }
+                if (!window.crypto || !window.crypto.subtle) {
+                    showError('Браузер не поддерживает Web Crypto (откройте сайт по https).');
+                    return;
+                }
+                var counter = Math.floor(Date.now() / 1000 / PERIOD);
                 codeEl.classList.add('refreshing');
-                fetch(API_BASE + '?secret=' + encodeURIComponent(currentToken), { cache: 'no-store' })
-                    .then(function (r) {
-                        if (!r.ok) throw new Error('HTTP ' + r.status);
-                        return r.json();
-                    })
-                    .then(function (data) {
-                        if (!data || !data.code) throw new Error('Пустой ответ сервиса');
-                        clearError();
-                        renderCode(String(data.code));
-                    })
-                    .catch(function (e) {
-                        showError('Не удалось получить код: ' + e.message + '. Проверьте токен и соединение.');
-                    })
-                    .then(function () {
-                        codeEl.classList.remove('refreshing');
-                    });
+                window.crypto.subtle.importKey(
+                    'raw', keyBytes, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']
+                ).then(function (key) {
+                    return window.crypto.subtle.sign('HMAC', key, counterBytes(counter));
+                }).then(function (sig) {
+                    var h = new Uint8Array(sig);
+                    var offset = h[h.length - 1] & 0x0f;
+                    var bin = ((h[offset] & 0x7f) << 24) |
+                              ((h[offset + 1] & 0xff) << 16) |
+                              ((h[offset + 2] & 0xff) << 8) |
+                              (h[offset + 3] & 0xff);
+                    var code = (bin % Math.pow(10, DIGITS)).toString();
+                    while (code.length < DIGITS) code = '0' + code;
+                    clearError();
+                    renderCode(code);
+                }).catch(function (e) {
+                    showError('Не удалось вычислить код: ' + e.message + '.');
+                }).then(function () {
+                    codeEl.classList.remove('refreshing');
+                });
             }
 
             function renderCode(code) {
@@ -357,9 +404,9 @@
                 var left = secondsLeft();
                 progressEl.style.width = (left / PERIOD * 100) + '%';
                 timerEl.textContent = 'Обновление через ' + left + ' с';
-                // На границе нового окна (осталось ровно PERIOD) запрашиваем новый код
+                // На границе нового окна (осталось ровно PERIOD) пересчитываем код
                 if (left === PERIOD) {
-                    fetchCode();
+                    generateCode();
                 }
             }
 
@@ -375,7 +422,7 @@
                 } else {
                     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
                 }
-                fetchCode();
+                generateCode();
                 if (tickHandle) clearInterval(tickHandle);
                 tick();
                 tickHandle = setInterval(tick, 1000);
