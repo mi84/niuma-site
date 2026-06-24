@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niuma — генератор разовых 2FA-кодов</title>
+    <link rel="stylesheet" href="style.css?v=20260318-1">
+    <link rel="icon" type="image/png" href="icon.png">
+    <style>
+        .tfa-page {
+            padding: 132px 0 96px;
+            min-height: 70vh;
+        }
+
+        .tfa-inner {
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .tfa-head {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .tfa-head h1 {
+            font-size: clamp(30px, 4vw, 44px);
+            line-height: 1.1;
+            margin: 16px 0 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .tfa-head p {
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .tfa-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 32px;
+        }
+
+        .tfa-field {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .tfa-input-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tfa-input {
+            flex: 1 1 240px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text);
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color var(--transition);
+        }
+
+        .tfa-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .tfa-input::placeholder { color: var(--text-dim); }
+
+        .tfa-options {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .tfa-options input { width: 16px; height: 16px; accent-color: var(--primary); }
+
+        .tfa-error {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 99, 99, 0.4);
+            background: rgba(255, 99, 99, 0.08);
+            color: #ff9b9b;
+            font-size: 14px;
+            display: none;
+        }
+
+        .tfa-result {
+            margin-top: 28px;
+            display: none;
+            text-align: center;
+        }
+
+        .tfa-result.active { display: block; }
+
+        .tfa-code-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        .tfa-code {
+            font-size: clamp(44px, 12vw, 68px);
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            line-height: 1;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+            user-select: all;
+            transition: opacity 0.25s ease;
+        }
+
+        .tfa-code.refreshing { opacity: 0.35; }
+
+        .tfa-copy-hint {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-dim);
+            min-height: 18px;
+        }
+
+        .tfa-progress {
+            margin: 24px auto 0;
+            max-width: 320px;
+        }
+
+        .tfa-progress-bar {
+            height: 6px;
+            border-radius: 6px;
+            background: var(--surface);
+            overflow: hidden;
+        }
+
+        .tfa-progress-fill {
+            height: 100%;
+            width: 100%;
+            background: var(--gradient);
+            border-radius: 6px;
+            transition: width 1s linear;
+        }
+
+        .tfa-progress-text {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .tfa-note {
+            margin-top: 28px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .tfa-note code {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 2px 6px;
+            font-size: 13px;
+            color: var(--primary-light);
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="index.html" class="logo">
+                <img src="icon.png" alt="Niuma" class="logo-icon" />
+                <span class="logo-text">Niuma</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html">Главная</a>
+                <a href="guide.html">Инструкция</a>
+                <a href="devin.html">Devin</a>
+                <a href="2fa.html">2FA-код</a>
+            </nav>
+            <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary btn-sm">Открыть бота</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Меню">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-nav" id="mobileNav">
+            <a href="index.html">Главная</a>
+            <a href="guide.html">Инструкция</a>
+            <a href="devin.html">Devin</a>
+            <a href="2fa.html">2FA-код</a>
+            <a href="https://t.me/niuma_local_bot" target="_blank" class="btn btn-primary">Открыть бота</a>
+        </div>
+    </header>
+
+    <main class="tfa-page">
+        <div class="container tfa-inner">
+            <div class="tfa-head">
+                <div class="badge">Двухфакторная аутентификация</div>
+                <h1>Разовый <span class="gradient-text">2FA-код</span></h1>
+                <p>Вставьте секретный токен — код сгенерируется и будет автоматически обновляться каждые 30 секунд.</p>
+            </div>
+
+            <div class="tfa-card">
+                <label class="tfa-field" for="tfaToken">Секретный токен</label>
+                <div class="tfa-input-row">
+                    <input class="tfa-input" id="tfaToken" type="text" inputmode="text"
+                           autocomplete="off" autocapitalize="off" spellcheck="false"
+                           placeholder="Например: JBSWY3DPEHPK3PXP">
+                    <button class="btn btn-primary" id="tfaSubmit" type="button">Получить код</button>
+                </div>
+                <label class="tfa-options">
+                    <input type="checkbox" id="tfaRemember"> Запомнить токен в этом браузере
+                </label>
+
+                <div class="tfa-error" id="tfaError"></div>
+
+                <div class="tfa-result" id="tfaResult">
+                    <div class="tfa-code-label">Текущий код</div>
+                    <div class="tfa-code" id="tfaCode" title="Нажмите, чтобы скопировать">— — — — — —</div>
+                    <div class="tfa-copy-hint" id="tfaCopyHint">Нажмите на код, чтобы скопировать</div>
+                    <div class="tfa-progress">
+                        <div class="tfa-progress-bar">
+                            <div class="tfa-progress-fill" id="tfaProgress"></div>
+                        </div>
+                        <div class="tfa-progress-text" id="tfaTimer">Обновление через 30 с</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tfa-note">
+                Код берётся через сервис <code>https://kloping.top/api/2fa0?secret=ВАШ_ТОКЕН</code>.
+                Токен хранится только в вашем браузере и отправляется напрямую этому сервису.
+                Подробнее о входе в Devin — на странице <a href="devin.html" style="color: var(--primary-light);">инструкции по Devin</a>.
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <img src="icon.png" alt="Niuma" class="logo-icon" />
+                    <span class="logo-text">Niuma</span>
+                </a>
+                <p>Разовые 2FA-коды для входа в выданные аккаунты.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>Навигация</h4>
+                    <a href="index.html">Главная</a>
+                    <a href="guide.html">Инструкция</a>
+                    <a href="devin.html">Настройка Devin</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Сайт</h4>
+                    <a href="oferta.html">Договор оферты</a>
+                    <a href="privacy.html">Политика конфиденциальности</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Контакты</h4>
+                    <a href="https://t.me/niuma_local_bot" target="_blank">Telegram: @niuma_local_bot</a>
+                    <a href="mailto:support@nc43.ru">Email: support@nc43.ru</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var API_BASE = 'https://kloping.top/api/2fa0';
+            var PERIOD = 30; // секунд, стандартный TOTP-период
+            var STORAGE_KEY = 'niuma.2fa.token';
+
+            var tokenInput = document.getElementById('tfaToken');
+            var submitBtn = document.getElementById('tfaSubmit');
+            var rememberBox = document.getElementById('tfaRemember');
+            var errorBox = document.getElementById('tfaError');
+            var resultBox = document.getElementById('tfaResult');
+            var codeEl = document.getElementById('tfaCode');
+            var copyHint = document.getElementById('tfaCopyHint');
+            var progressEl = document.getElementById('tfaProgress');
+            var timerEl = document.getElementById('tfaTimer');
+
+            var currentToken = '';
+            var tickHandle = null;
+
+            // Мобильное меню
+            var menuBtn = document.getElementById('mobileMenuBtn');
+            var mobileNav = document.getElementById('mobileNav');
+            if (menuBtn) {
+                menuBtn.addEventListener('click', function () {
+                    mobileNav.classList.toggle('active');
+                });
+            }
+
+            function secondsLeft() {
+                return PERIOD - (Math.floor(Date.now() / 1000) % PERIOD);
+            }
+
+            function showError(msg) {
+                errorBox.textContent = msg;
+                errorBox.style.display = 'block';
+            }
+
+            function clearError() {
+                errorBox.style.display = 'none';
+                errorBox.textContent = '';
+            }
+
+            function fetchCode() {
+                if (!currentToken) return;
+                codeEl.classList.add('refreshing');
+                fetch(API_BASE + '?secret=' + encodeURIComponent(currentToken), { cache: 'no-store' })
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.json();
+                    })
+                    .then(function (data) {
+                        if (!data || !data.code) throw new Error('Пустой ответ сервиса');
+                        clearError();
+                        renderCode(String(data.code));
+                    })
+                    .catch(function (e) {
+                        showError('Не удалось получить код: ' + e.message + '. Проверьте токен и соединение.');
+                    })
+                    .then(function () {
+                        codeEl.classList.remove('refreshing');
+                    });
+            }
+
+            function renderCode(code) {
+                var spaced = code.length === 6 ? code.slice(0, 3) + ' ' + code.slice(3) : code;
+                codeEl.textContent = spaced;
+                codeEl.dataset.raw = code;
+                resultBox.classList.add('active');
+            }
+
+            function tick() {
+                var left = secondsLeft();
+                progressEl.style.width = (left / PERIOD * 100) + '%';
+                timerEl.textContent = 'Обновление через ' + left + ' с';
+                // На границе нового окна (осталось ровно PERIOD) запрашиваем новый код
+                if (left === PERIOD) {
+                    fetchCode();
+                }
+            }
+
+            function start(token) {
+                currentToken = token.trim();
+                if (!currentToken) {
+                    showError('Введите секретный токен.');
+                    return;
+                }
+                clearError();
+                if (rememberBox.checked) {
+                    try { localStorage.setItem(STORAGE_KEY, currentToken); } catch (e) {}
+                } else {
+                    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+                }
+                fetchCode();
+                if (tickHandle) clearInterval(tickHandle);
+                tick();
+                tickHandle = setInterval(tick, 1000);
+            }
+
+            submitBtn.addEventListener('click', function () { start(tokenInput.value); });
+            tokenInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') start(tokenInput.value);
+            });
+
+            codeEl.addEventListener('click', function () {
+                var raw = codeEl.dataset.raw;
+                if (!raw) return;
+                var done = function () {
+                    copyHint.textContent = 'Код скопирован ✓';
+                    setTimeout(function () { copyHint.textContent = 'Нажмите на код, чтобы скопировать'; }, 1800);
+                };
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(raw).then(done, function () { done(); });
+                } else {
+                    done();
+                }
+            });
+
+            // Восстановление сохранённого токена
+            try {
+                var saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    tokenInput.value = saved;
+                    rememberBox.checked = true;
+                    start(saved);
+                }
+            } catch (e) {}
+        })();
+    </script>
+</body>
+</html>
