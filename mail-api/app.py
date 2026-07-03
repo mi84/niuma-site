@@ -22,6 +22,12 @@ TOKEN_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
 IMAP_HOST = "outlook.office365.com"
 IMAP_PORT = 993
 SCOPE = "https://outlook.office.com/IMAP.AccessAsUser.All offline_access"
+# Outlook REST API v2.0 — used as a fallback when IMAP is disabled on the mailbox.
+# The OAuth token issued for the scope above also grants Mail.ReadWrite on the
+# outlook.office.com resource, so the inbox stays readable over HTTPS even when the
+# account owner has turned IMAP/POP off (Outlook then answers IMAP with the misleading
+# "User is authenticated but not connected.").
+REST_BASE = "https://outlook.office.com/api/v2.0"
 
 # Optional shared secret. If set, clients must send it in the request body "key".
 API_KEY = os.environ.get("MAIL_API_KEY", "").strip()
@@ -108,6 +114,50 @@ def extract_codes(text):
     return seen[:5]
 
 
+def fetch_via_rest(acc_email, token, sender_filter):
+    """Read the inbox over the Outlook REST API (works when IMAP is disabled)."""
+    top = min(50, FETCH_LIMIT * 3) if sender_filter else FETCH_LIMIT
+    query = urllib.parse.urlencode({
+        "$top": str(top),
+        "$select": "Subject,From,ReceivedDateTime,BodyPreview,Body",
+        "$orderby": "ReceivedDateTime desc",
+    })
+    req = urllib.request.Request(
+        f"{REST_BASE}/me/messages?{query}",
+        headers={"Authorization": f"Bearer {token}", "Accept": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        data = json.load(resp)
+
+    messages = []
+    all_codes = []
+    for m in data.get("value", []):
+        frm = m.get("From", {}).get("EmailAddress", {}) or {}
+        from_addr = frm.get("Address", "")
+        from_name = frm.get("Name", "")
+        if sender_filter and sender_filter.lower() not in (from_addr + " " + from_name).lower():
+            continue
+        body = m.get("Body", {}) or {}
+        content = body.get("Content", "") or ""
+        if (body.get("ContentType", "") or "").lower() == "html":
+            content = re.sub(r"<[^>]+>", " ", content)
+        subject = m.get("Subject", "") or ""
+        codes = extract_codes(subject + "\n" + content)
+        all_codes.extend(codes)
+        preview = re.sub(r"\s+", " ", content or m.get("BodyPreview", "")).strip()[:240]
+        from_full = (f"{from_name} <{from_addr}>" if from_name else from_addr).strip()
+        messages.append({
+            "from": from_full,
+            "subject": subject,
+            "date": m.get("ReceivedDateTime", ""),
+            "preview": preview,
+            "codes": codes,
+        })
+        if len(messages) >= FETCH_LIMIT:
+            break
+    return messages, all_codes
+
+
 def fetch_account(line, sender_filter):
     acc = parse_account(line)
     if not acc:
@@ -157,8 +207,20 @@ def fetch_account(line, sender_filter):
         imap.logout()
         result["ok"] = True
         result["code"] = all_codes[0] if all_codes else None
-    except Exception as e:
-        result["error"] = f"IMAP: {e}"
+        result["transport"] = "imap"
+        return result
+    except Exception as imap_err:
+        # IMAP may be disabled on the mailbox (Outlook reports this as the misleading
+        # "User is authenticated but not connected."). Fall back to the REST API, which
+        # works with the same OAuth token regardless of the IMAP/POP toggle.
+        try:
+            messages, all_codes = fetch_via_rest(acc["email"], token, sender_filter)
+            result["messages"] = messages
+            result["ok"] = True
+            result["code"] = all_codes[0] if all_codes else None
+            result["transport"] = "rest"
+        except Exception as rest_err:
+            result["error"] = f"IMAP: {imap_err}; REST: {rest_err}"
     return result
 
 
