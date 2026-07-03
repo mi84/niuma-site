@@ -153,7 +153,8 @@
             <div class="ml-note">
                 Строка аккаунта имеет вид <code>email----пароль----client_id----refresh_token</code>.
                 По <code>refresh_token</code> получается токен Microsoft, и почта читается по протоколу
-                <code>IMAP</code> (XOAUTH2) на нашем сервере <code>api.niuma.ru</code> — сторонние сервисы не используются,
+                <code>IMAP</code> (XOAUTH2), а если IMAP на аккаунте отключён — через Outlook REST API с тем же
+                токеном, на нашем сервере <code>api.niuma.ru</code> — сторонние сервисы не используются,
                 письма нигде не сохраняются. Подробнее о входе в Devin — на странице
                 <a href="devin.html" style="color: var(--primary-light);">инструкции по Devin</a>.
             </div>
