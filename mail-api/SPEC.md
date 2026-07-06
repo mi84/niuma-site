@@ -22,6 +22,12 @@ FastAPI-сервис, который по строке доступа Outlook о
     `MAIL_API_KEY`).
   - Ответ: `{"accounts": [ {email, ok, messages[], code, transport, error?}, ... ]}`.
     Аккаунты обрабатываются параллельно (`ThreadPoolExecutor`).
+  - Тело — JSON; принимается и с `Content-Type: application/json`, и с
+    `text/plain` (тело парсится вручную). Фронт шлёт **без** заголовка
+    `Content-Type`, чтобы запрос был CORS-«простым» и браузер не делал preflight
+    `OPTIONS` — некоторые сети/провайдеры режут OPTIONS к зарубежному IP, и это
+    выглядело как ложное `Failed to fetch` при живом сервере. Блокирующая работа
+    вынесена в `run_in_threadpool`, чтобы не держать event loop.
 
 ## Поток на аккаунт (`fetch_account`)
 

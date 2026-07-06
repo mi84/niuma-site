@@ -15,7 +15,8 @@ import json
 from email.header import decode_header
 from concurrent.futures import ThreadPoolExecutor
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from starlette.concurrency import run_in_threadpool
 from pydantic import BaseModel
 
 TOKEN_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
@@ -229,8 +230,7 @@ def health():
     return {"ok": True}
 
 
-@app.post("/api/inbox")
-def inbox(req: InboxRequest):
+def build_inbox_response(req: InboxRequest):
     if API_KEY and req.key != API_KEY:
         raise HTTPException(status_code=401, detail="Неверный или отсутствует ключ доступа")
     lines = [l for l in req.raw.splitlines() if l.strip()]
@@ -242,3 +242,25 @@ def inbox(req: InboxRequest):
     with ThreadPoolExecutor(max_workers=min(len(lines), 8)) as ex:
         results = list(ex.map(lambda l: fetch_account(l, sender), lines))
     return {"accounts": results}
+
+
+@app.post("/api/inbox")
+async def inbox(request: Request):
+    # Parse the body ourselves instead of declaring `req: InboxRequest` so we accept
+    # both application/json and CORS-safelisted text/plain bodies. Sending the request
+    # as a "simple" text/plain request lets the browser skip the CORS preflight
+    # (OPTIONS), which some networks/ISPs drop — the frontend then sees a misleading
+    # "Failed to fetch" even though the service is healthy.
+    body = await request.body()
+    try:
+        payload = json.loads(body.decode("utf-8")) if body else {}
+    except (ValueError, UnicodeDecodeError):
+        raise HTTPException(status_code=400, detail="Некорректное тело запроса (ожидается JSON)")
+    if not isinstance(payload, dict):
+        raise HTTPException(status_code=400, detail="Некорректное тело запроса (ожидается JSON-объект)")
+    req = InboxRequest(
+        raw=str(payload.get("raw", "") or ""),
+        sender=str(payload.get("sender", "") or ""),
+        key=str(payload.get("key", "") or ""),
+    )
+    return await run_in_threadpool(build_inbox_response, req)

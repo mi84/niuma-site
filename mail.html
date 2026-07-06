@@ -329,9 +329,12 @@
 
                 function attempt(n) {
                     setStatus(n > 1 ? ('Соединение нестабильно, повтор ' + n + '/' + MAX_ATTEMPTS + '…') : 'Получаю почту…');
+                    // No custom headers: a string body makes this a CORS "simple"
+                    // request (Content-Type text/plain), so the browser skips the
+                    // preflight OPTIONS. Some networks drop that OPTIONS, which shows
+                    // up as a misleading "Failed to fetch" even though the server is up.
                     fetchWithTimeout(API_URL, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
                         body: body
                     }, REQUEST_TIMEOUT_MS).then(function (r) {
                         return r.json().then(function (data) { return { ok: r.ok, data: data }; });
