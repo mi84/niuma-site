@@ -285,7 +285,30 @@
                 return card;
             }
 
+            var REQUEST_TIMEOUT_MS = 90000;
+            var MAX_ATTEMPTS = 3;
+            var RETRY_DELAY_MS = 1500;
+            var inFlight = false;
+
+            function fetchWithTimeout(url, options, timeoutMs) {
+                if (typeof AbortController === 'undefined') {
+                    return fetch(url, options);
+                }
+                var controller = new AbortController();
+                var timer = setTimeout(function () { controller.abort(); }, timeoutMs);
+                options = options || {};
+                options.signal = controller.signal;
+                return fetch(url, options).then(function (r) {
+                    clearTimeout(timer);
+                    return r;
+                }, function (e) {
+                    clearTimeout(timer);
+                    throw e;
+                });
+            }
+
             function fetchInbox() {
+                if (inFlight) return;
                 var raw = accountsEl.value.trim();
                 if (!raw) { showError('Вставьте хотя бы одну строку аккаунта.'); return; }
                 clearError();
@@ -296,35 +319,55 @@
                     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
                 }
 
+                inFlight = true;
                 submitBtn.disabled = true;
-                setStatus('Получаю почту…');
 
-                fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        raw: raw,
-                        sender: onlyDevinEl.checked ? 'cognition.ai' : ''
-                    })
-                }).then(function (r) {
-                    return r.json().then(function (data) { return { ok: r.ok, data: data }; });
-                }).then(function (res) {
-                    submitBtn.disabled = false;
-                    setStatus('');
-                    if (!res.ok) {
-                        showError((res.data && res.data.detail) ? res.data.detail : 'Ошибка сервера.');
-                        return;
-                    }
-                    resultsEl.innerHTML = '';
-                    (res.data.accounts || []).forEach(function (acc) {
-                        resultsEl.appendChild(renderAccount(acc));
-                    });
-                    if (!(res.data.accounts || []).length) setStatus('Аккаунты не распознаны.');
-                }).catch(function (e) {
-                    submitBtn.disabled = false;
-                    setStatus('');
-                    showError('Не удалось связаться с сервером: ' + e.message);
+                var body = JSON.stringify({
+                    raw: raw,
+                    sender: onlyDevinEl.checked ? 'cognition.ai' : ''
                 });
+
+                function attempt(n) {
+                    setStatus(n > 1 ? ('Соединение нестабильно, повтор ' + n + '/' + MAX_ATTEMPTS + '…') : 'Получаю почту…');
+                    fetchWithTimeout(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: body
+                    }, REQUEST_TIMEOUT_MS).then(function (r) {
+                        return r.json().then(function (data) { return { ok: r.ok, data: data }; });
+                    }).then(function (res) {
+                        inFlight = false;
+                        submitBtn.disabled = false;
+                        setStatus('');
+                        if (!res.ok) {
+                            showError((res.data && res.data.detail) ? res.data.detail : 'Ошибка сервера.');
+                            return;
+                        }
+                        resultsEl.innerHTML = '';
+                        (res.data.accounts || []).forEach(function (acc) {
+                            resultsEl.appendChild(renderAccount(acc));
+                        });
+                        if (!(res.data.accounts || []).length) setStatus('Аккаунты не распознаны.');
+                    }).catch(function (e) {
+                        // Network-level failure (dropped connection, timeout, offline).
+                        // Retry a few times before giving up — helps on unstable connections.
+                        if (n < MAX_ATTEMPTS) {
+                            setStatus('Соединение прервалось, повтор через пару секунд…');
+                            setTimeout(function () { attempt(n + 1); }, RETRY_DELAY_MS);
+                            return;
+                        }
+                        inFlight = false;
+                        submitBtn.disabled = false;
+                        setStatus('');
+                        var reason = (e && e.name === 'AbortError')
+                            ? 'сервер не ответил вовремя'
+                            : 'нет связи с сервером';
+                        showError('Не удалось получить письма: ' + reason +
+                            '. Проверьте интернет-соединение и попробуйте ещё раз.');
+                    });
+                }
+
+                attempt(1);
             }
 
             function applyAuto() {
