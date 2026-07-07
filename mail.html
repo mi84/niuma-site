@@ -383,7 +383,11 @@
 
             try {
                 var saved = localStorage.getItem(STORAGE_KEY);
-                if (saved) { accountsEl.value = saved; rememberEl.checked = true; }
+                if (saved) {
+                    accountsEl.value = saved;
+                    rememberEl.checked = true;
+                    fetchInbox();
+                }
             } catch (e) {}
         })();
     </script>
