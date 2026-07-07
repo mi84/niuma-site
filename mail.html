@@ -285,10 +285,21 @@
                 return card;
             }
 
-            var REQUEST_TIMEOUT_MS = 90000;
-            var MAX_ATTEMPTS = 3;
-            var RETRY_DELAY_MS = 1500;
+            // Unstable RF-mobile links to the origin (US IP) often stall rather
+            // than fail cleanly. Abort a stalled attempt fast and retry a fresh
+            // connection many times with a short backoff instead of blocking on
+            // one long timeout — a new connection usually succeeds where a
+            // hung one won't.
+            var REQUEST_TIMEOUT_MS = 25000;
+            var MAX_ATTEMPTS = 6;
+            var RETRY_DELAY_MS = 1200;
+            var RETRY_DELAY_MAX_MS = 5000;
             var inFlight = false;
+
+            function retryDelay(n) {
+                var d = RETRY_DELAY_MS * Math.pow(1.6, n - 1);
+                return Math.min(Math.round(d), RETRY_DELAY_MAX_MS);
+            }
 
             function fetchWithTimeout(url, options, timeoutMs) {
                 if (typeof AbortController === 'undefined') {
@@ -355,8 +366,8 @@
                         // Network-level failure (dropped connection, timeout, offline).
                         // Retry a few times before giving up — helps on unstable connections.
                         if (n < MAX_ATTEMPTS) {
-                            setStatus('Соединение прервалось, повтор через пару секунд…');
-                            setTimeout(function () { attempt(n + 1); }, RETRY_DELAY_MS);
+                            setStatus('Соединение нестабильно, повтор ' + (n + 1) + '/' + MAX_ATTEMPTS + '…');
+                            setTimeout(function () { attempt(n + 1); }, retryDelay(n));
                             return;
                         }
                         inFlight = false;
@@ -383,7 +394,11 @@
 
             try {
                 var saved = localStorage.getItem(STORAGE_KEY);
-                if (saved) { accountsEl.value = saved; rememberEl.checked = true; }
+                if (saved) {
+                    accountsEl.value = saved;
+                    rememberEl.checked = true;
+                    fetchInbox();
+                }
             } catch (e) {}
         })();
     </script>

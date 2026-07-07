@@ -68,8 +68,15 @@ CORS вешается на nginx (api.niuma.ru), в приложении middlew
 
 - Фронт `mail.html` — на **GitHub Pages** (`https://niuma.ru/mail.html`), шлёт
   `POST https://api.niuma.ru/mailapi/api/inbox`.
-- `api.niuma.ru` → **107.173.7.103** (проверять `getent hosts api.niuma.ru`;
-  другой VPS 185.87.192.112 обслуживает только `svetlyachok.niuma.ru`).
+- `api.niuma.ru` — origin **107.173.7.103**, проксируется через **Cloudflare**
+  (оранжевое облако; DNS `niuma.ru` на NS Cloudflare). Публично резолвится в
+  Cloudflare edge (`104.21.x`/`172.67.x`), edge ходит на origin по HTTPS
+  (SSL/TLS **Full (strict)**, на origin валидный LE-сертификат). Так делаем ради
+  доступности с мобильных РФ: голый US-IP оттуда нестабилен (та же причина, по
+  которой статика на GitHub Pages). Проверка маршрута: `curl -sI
+  https://api.niuma.ru/mailapi/api/health` → `server: cloudflare` + `cf-ray`.
+  Origin по-прежнему слушает nginx на 107.173.7.103 (другой VPS 185.87.192.112 —
+  только `svetlyachok.niuma.ru`).
 - Сервис `niuma-mailapi.service`, код в `/opt/niuma-mailapi/app.py`, uvicorn на
   `127.0.0.1:8201`, маршрут nginx `/mailapi/` в
   `/etc/nginx/sites-available/api.niuma.conf`.
