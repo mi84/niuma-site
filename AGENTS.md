@@ -28,7 +28,9 @@ niuma.conf, *.sh, *.conf   — nginx / cloudflared / выпуск сертифи
   помечен Microsoft как устаревший; IMAP работает там, где включён. Держим оба.
 
 ### Прод / деплой
-`mail.html` (Pages) → `POST https://api.niuma.ru/mailapi/api/inbox`.
+Клиент — телеграм-бот продаж Devin (`wind_bot/shop_bot_2.py`, репозиторий `bot`)
+→ `POST https://api.niuma.ru/mailapi/api/inbox`. Страницы `mail.html`/`2fa.html`
+с сайта удалены — получение кодов перенесено в бота (@windsurf_pro_bot).
 `api.niuma.ru` = **107.173.7.103** (сервис `niuma-mailapi`, uvicorn
 `127.0.0.1:8201`, код `/opt/niuma-mailapi/app.py`). Команды деплоя и проверки —
 в `mail-api/SPEC.md`. Тест-флоу через UI и подводные камни — в скилле
