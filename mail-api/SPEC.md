@@ -66,8 +66,10 @@ CORS вешается на nginx (api.niuma.ru), в приложении middlew
 
 ## Продакшн-топология
 
-- Фронт `mail.html` — на **GitHub Pages** (`https://niuma.ru/mail.html`), шлёт
-  `POST https://api.niuma.ru/mailapi/api/inbox`.
+- Клиент — телеграм-бот продаж Devin (`wind_bot/shop_bot_2.py`, кнопка
+  «🔑 Получить код» → «📧 Код с почты»), шлёт
+  `POST https://api.niuma.ru/mailapi/api/inbox`. Страница `mail.html` с сайта
+  удалена — получение кодов перенесено в бота.
 - `api.niuma.ru` — origin **107.173.7.103**, проксируется через **Cloudflare**
   (оранжевое облако; DNS `niuma.ru` на NS Cloudflare). Публично резолвится в
   Cloudflare edge (`104.21.x`/`172.67.x`), edge ходит на origin по HTTPS
@@ -92,6 +94,5 @@ ssh root@107.173.7.103 '
   curl -s http://127.0.0.1:8201/api/health'
 ```
 
-`mail.html` обновляется автоматически через GitHub Pages при мерже в `main`
-(текст сноски про протокол может отставать от деплоя — это косметика,
-функциональная логика на сервере).
+Фронта на сайте больше нет: коды выдаются через бота @windsurf_pro_bot
+(деплой бота — репозиторий `bot`, сервис `wind_shop_bot_2` на том же VPS).

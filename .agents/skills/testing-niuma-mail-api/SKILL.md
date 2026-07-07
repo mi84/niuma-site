@@ -1,6 +1,6 @@
 ---
 name: testing-niuma-mail-api
-description: Deploy and test the Niuma mail-api (Outlook OAuth reader) end-to-end via https://niuma.ru/mail.html. Use when verifying changes to mail-api/app.py (IMAP/REST inbox reading, code extraction) or the mail.html frontend.
+description: Deploy and test the Niuma mail-api (Outlook OAuth reader) end-to-end. Client is now the Devin sales Telegram bot @windsurf_pro_bot (mail.html was removed). Use when verifying changes to mail-api/app.py (IMAP/REST inbox reading, code extraction).
 ---
 
 # Testing the Niuma mail-api (Outlook code reader)
@@ -8,8 +8,9 @@ description: Deploy and test the Niuma mail-api (Outlook OAuth reader) end-to-en
 ## What it is
 `mail-api/app.py` (FastAPI) exchanges an Outlook `refresh_token` for an OAuth
 access token and reads the inbox, returning recent messages + extracted
-verification codes (e.g. Devin login codes). Frontend: `mail.html`.
-Input string format: `email----password----client_id----refresh_token`.
+verification codes (e.g. Devin login codes). Client: the Devin sales Telegram
+bot `wind_bot/shop_bot_2.py` (`@windsurf_pro_bot`) — the old `mail.html` page
+was removed. Input string format: `email----password----client_id----refresh_token`.
 
 - IMAP XOAUTH2 is the primary path (`outlook.office365.com:993`).
 - If IMAP fails (common cause: **account has IMAP/POP disabled** → Outlook
@@ -19,8 +20,10 @@ Input string format: `email----password----client_id----refresh_token`.
   turned off someday, IMAP works where enabled.
 
 ## Where it runs (prod)
-- `mail.html` is on **GitHub Pages** at `https://niuma.ru/mail.html` and POSTs to
-  `https://api.niuma.ru/mailapi/api/inbox`.
+- Client: the Telegram bot `@windsurf_pro_bot` (repo `bot`, service
+  `wind_shop_bot_2` on the same VPS) POSTs to
+  `https://api.niuma.ru/mailapi/api/inbox` via `common/code_tools.fetch_mail_code`.
+  The old `mail.html` GitHub Pages frontend was removed.
 - `api.niuma.ru` resolves to **107.173.7.103** (NOT other niuma VPS like
   185.87.192.112, which only serves `svetlyachok.niuma.ru`). Verify with
   `getent hosts api.niuma.ru` before deploying.
@@ -50,29 +53,28 @@ a=json.load(urllib.request.urlopen(req,timeout=40))["accounts"][0]
 print(a["ok"], a.get("transport"), a.get("code"))   # expect: True rest/imap <6-digit>
 ```
 
-## UI test (record this)
-1. Open `https://niuma.ru/mail.html`, maximize window.
-2. Paste the account string into the "Аккаунты" textarea. Keep "Только письма
-   Devin (код входа)" checked (sends `sender=cognition.ai`).
-3. Click "Получить письма".
-- **PASS**: green **OK** badge, a 6-digit code, messages from
-  `Devin <no-reply@cognition.ai>` "Your Devin Login Code".
-- **FAIL/old**: red **Ошибка** badge with `IMAP: User is authenticated but not connected.`
+## Bot test (record this)
+1. Open `@windsurf_pro_bot` in Telegram → main menu → **🔑 Получить код** →
+   **📧 Код с почты**.
+2. Send the account string `email----password----client_id----refresh_token`.
+3. The bot replies with the latest login code and a **🔄 Обновить** button.
+- **PASS**: “✅ Последний код входа” with a 6-digit code (from
+  `Devin <no-reply@cognition.ai>` "Your Devin Login Code").
+- **FAIL/old**: “❌ Не удалось получить код”, e.g. `IMAP: User is authenticated but not connected.`
+
+2FA: **🔑 Получить код** → **🔐 2FA-код** → send the Base32 token → 6-digit
+TOTP with **🔄 Обновить** (computed locally in the bot, not via mail-api).
 
 ### GOTCHA — do NOT `type` the token
 The refresh_token is ~500 chars; the computer-use `type` action drops
 characters and you'll get an unrelated error like
 `OAuth: AADSTS7000012: The grant was obtained for a different tenant.`
-(mangled token). Instead put the exact string on the clipboard and paste:
-```bash
-tr -d '\n' < /tmp/tok.txt | DISPLAY=:0 xclip -selection clipboard
-```
-then click the textarea, `ctrl+a`, `Delete`, `ctrl+v`. Confirm via the DOM
-`text=` attribute that the `M.` prefix and all chars are intact before submitting.
+(mangled token). Instead put the exact string on the clipboard and paste it
+into the Telegram input, or use the quick API check below to avoid the UI.
 
-Note: `mail.html` footnote text still says "IMAP (XOAUTH2)" only — cosmetic; it
-lives on GitHub Pages and lags merged doc changes. The functional fix is
-server-side.
+### Fastest: API check without any UI
+Prefer the “Quick API check” above — it hits the same endpoint the bot uses and
+sidesteps token-typing issues entirely.
 
 ## Devin Secrets Needed
 - `VPS` — SSH access to the niuma prod server (107.173.7.103, root). In this org
